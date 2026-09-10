@@ -87,12 +87,15 @@ func Install(name, sourceURL string) error {
 
 // remove skill
 func Remove(name string) error {
-	// remove symlink/copies
-	os.RemoveAll(filepath.Join(SkillsDir(), name))
+	seen := map[string]bool{}
 
-	home, _ := os.UserHomeDir()
-	codexSkill := filepath.Join(home, ".codex", "skills", name)
-	os.RemoveAll(codexSkill)
+	for _, h := range InstalledHarnesses() {
+		if seen[h.SkillsDir] {
+			continue
+		}
+		seen[h.SkillsDir] = true
+		os.RemoveAll(filepath.Join(h.SkillsDir, name))
+	}
 
 	// remove from local store
 	return os.RemoveAll(filepath.Join(StoreDir(), name))
@@ -100,39 +103,38 @@ func Remove(name string) error {
 
 // generating symlinks
 func symlinkToHarnessDirs(name, storeDir string) error {
-	// ~/.agents directory
-	agentsLink := filepath.Join(SkillsDir(), name)
-	os.MkdirAll(filepath.Dir(agentsLink), 0755)
-	if err := os.Symlink(storeDir, agentsLink); err != nil && !os.IsExist(err) {
-		return fmt.Errorf("symlink agents: %w", err)
-	}
+	seen := map[string]bool{}
 
-	// ~/.codex directory (only if it's installed)
-	home, _ := os.UserHomeDir()
-	codexDir := filepath.Join(home, ".codex")
-	if _, err := os.Stat(codexDir); err == nil {
-		codexLink := filepath.Join(codexDir, "skills", name)
-		os.MkdirAll(filepath.Dir(codexLink), 0755)
-		os.Symlink(storeDir, codexLink)
+	for _, h := range InstalledHarnesses() {
+		if seen[h.SkillsDir] {
+			continue
+		}
+		seen[h.SkillsDir] = true
+
+		os.MkdirAll(h.SkillsDir, 0755)
+		link := filepath.Join(h.SkillsDir, name)
+		if err := os.Symlink(storeDir, link); err != nil && !os.IsExist(err) {
+			return fmt.Errorf("symlink %s: %w", h.Name, err)
+		}
 	}
 
 	return nil
 }
 
 func copyToHarnessDirs(name, storeDir string) error {
-	targets := []string{filepath.Join(SkillsDir(), name)}
+	seen := map[string]bool{}
 
-	home, _ := os.UserHomeDir()
-	codexDir := filepath.Join(home, ".codex")
-	if _, err := os.Stat(codexDir); err == nil {
-		targets = append(targets, filepath.Join(codexDir, "skills", name))
-	}
-
-	for _, t := range targets {
-		if err := copyDir(storeDir, t); err != nil {
-			return err
+	for _, h := range InstalledHarnesses() {
+		if seen[h.SkillsDir] {
+			continue
+		}
+		seen[h.SkillsDir] = true
+		dest := filepath.Join(h.SkillsDir, name)
+		if err := copyDir(storeDir, dest); err != nil {
+			return fmt.Errorf("copy to %s: %w", h.Name, err)
 		}
 	}
+
 	return nil
 }
 
