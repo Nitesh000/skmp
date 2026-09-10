@@ -21,7 +21,7 @@ Install, search, and manage skills across all major agentic tools — pi, Claude
 │                      │ ● installed                              │
 │                      │ [x] remove                               │
 ├──────────────────────┴──────────────────────────────────────────┤
-│ Installed: 2 │ Available: 4          ✓ ready      skmp v0.1.0  │
+│ Installed: 2 │ Available: 4          ✓ ready      skmp v0.0.1   │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -69,30 +69,30 @@ skmp sync
 
 ## Keybindings
 
-| Key | Action |
-|-----|--------|
-| `j` / `↓` | move down |
-| `k` / `↑` | move up |
-| `1` | skills tab |
-| `2` | bundles tab |
-| `/` | search |
-| `esc` | clear search |
+| Key         | Action            |
+| ----------- | ----------------- |
+| `j` / `↓`   | move down         |
+| `k` / `↑`   | move up           |
+| `1`         | skills tab        |
+| `2`         | bundles tab       |
+| `/`         | search            |
+| `esc`       | clear search      |
 | `tab` / `l` | focus detail pane |
-| `h` | focus list pane |
-| `i` | install selected |
-| `x` | remove selected |
-| `?` | toggle help |
-| `q` | quit |
+| `h`         | focus list pane   |
+| `i`         | install selected  |
+| `x`         | remove selected   |
+| `?`         | toggle help       |
+| `q`         | quit              |
 
 ## Supported Harnesses
 
-| Harness | Skills path |
-|---------|-------------|
-| [pi](https://github.com/pi-cli/pi) | `~/.agents/skills/` |
-| [Claude Code](https://claude.ai/code) | `~/.agents/skills/` |
-| [OpenCode](https://opencode.ai) | `~/.agents/skills/` |
-| [Antigravity](https://antigravity.dev) | `~/.agents/skills/` |
-| [Codex](https://github.com/openai/codex) | `~/.codex/skills/` |
+| Harness                                  | Skills path         |
+| ---------------------------------------- | ------------------- |
+| [pi](https://github.com/pi-cli/pi)       | `~/.agents/skills/` |
+| [Claude Code](https://claude.ai/code)    | `~/.agents/skills/` |
+| [OpenCode](https://opencode.ai)          | `~/.agents/skills/` |
+| [Antigravity](https://antigravity.dev)   | `~/.agents/skills/` |
+| [Codex](https://github.com/openai/codex) | `~/.codex/skills/`  |
 
 Skills are installed once to `~/.skmp/skills/` and symlinked into each harness automatically.
 Run `skmp sync` after installing a new harness to link existing skills into it.

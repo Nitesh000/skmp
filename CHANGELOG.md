@@ -6,7 +6,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [Unreleased]
+## [0.0.1] — Unreleased
 
 ### Added
 - Full-screen TUI with skills and bundles tabs
