@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-10T00:00:00Z",
+  "updated": "2026-09-11T00:00:00Z",
   "version": 1,
   "skills": [
     {
@@ -37,6 +37,17 @@
       "tags": ["skills", "meta", "scaffolding"],
       "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/nitesh000/skill-set/main/registry/skills/write-a-skill/"
+    }
+  ],
+  "bundles": [
+    {
+      "name": "nitesh000/skill-set",
+      "description": "Core productivity skills — caveman, diagnose, tdd, write-a-skill",
+      "author": "nitesh000",
+      "repo": "https://github.com/nitesh000/skmp",
+      "branch": "master",
+      "skills_path": "registry/skills",
+      "skills": ["caveman", "diagnose", "tdd", "write-a-skill"]
     }
   ]
 }

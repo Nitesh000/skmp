@@ -18,6 +18,16 @@ var addCmd = &cobra.Command{
 			return fmt.Errorf("registry: %w", err)
 		}
 
+		bundleSrc, _ := cmd.Flags().GetString("bundle")
+		if bundleSrc != "" {
+			bf, err := registry.LoadBundle(bundleSrc, idx)
+			if err != nil {
+				return fmt.Errorf("bundle: %w", err)
+			}
+			fmt.Printf("bundle: %s (%d skills)\n", bf.Bundle, len(bf.Skills))
+			args = bf.Skills
+		}
+
 		// registry by name for fast lookup
 		skillMap := map[string]registry.Skill{}
 		for _, s := range idx.Skills {
@@ -57,5 +67,6 @@ var addCmd = &cobra.Command{
 }
 
 func init() {
+	addCmd.Flags().StringP("bundle", "b", "", "install all sckills from a bundle")
 	rootCmd.AddCommand(addCmd)
 }

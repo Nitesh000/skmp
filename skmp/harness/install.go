@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"time"
-	"unique"
 )
 
 func SkillsDir() string {

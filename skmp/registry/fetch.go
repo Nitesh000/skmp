@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
 const (
-	indexURL = "https://cnd.jsdelivr.net/gh/nitesh000/skill-set@master/registry/index.json"
+	indexURL = "https://cdn.jsdelivr.net/gh/nitesh000/skmp@master/registry/index.json"
 	cacheTTL = 24 * time.Hour
 )
 
@@ -24,7 +25,6 @@ func cacheValid() bool {
 	if err != nil {
 		return false
 	}
-
 	return time.Since(info.ModTime()) < cacheTTL
 }
 
@@ -44,7 +44,6 @@ func fetchRemote() (*Index, error) {
 	if err := json.NewDecoder(res.Body).Decode(&idx); err != nil {
 		return nil, err
 	}
-
 	return &idx, nil
 }
 
@@ -57,7 +56,6 @@ func readCache() (*Index, error) {
 	if err := json.Unmarshal(data, &idx); err != nil {
 		return nil, err
 	}
-
 	return &idx, nil
 }
 
@@ -75,13 +73,39 @@ func Load() (*Index, error) {
 
 	idx, err := fetchRemote()
 	if err != nil {
-		// network falied - go for the stale cache if exist
-		if cached, cacheErr := readCache(); cacheErr != nil {
+		// network failed — fall back to stale cache if it exists
+		if cached, cacheErr := readCache(); cacheErr == nil {
 			return cached, nil
 		}
-		return nil, fmt.Errorf("fetch falied and no cache: %w", err)
+		return nil, fmt.Errorf("fetch failed and no cache: %w", err)
 	}
 
 	saveCache(idx)
 	return idx, nil
+}
+
+func LoadBundle(name string, idx *Index) (*BundleFile, error) {
+	for _, b := range idx.Bundles {
+		if b.Name == name {
+			return &BundleFile{
+				Bundle:      b.Name,
+				Description: b.Description,
+				Author:      b.Author,
+				Repo:        b.Repo,
+				Branch:      b.Branch,
+				SkillsPath:  b.SkillsPath,
+				Skills:      b.Skills,
+			}, nil
+		}
+	}
+	return nil, fmt.Errorf("bundle %q not found in registry", name)
+}
+
+// BundleSkillSource builds the download URL for a skill inside a bundle.
+// Used when a bundle skill is not individually listed in index.json.
+func BundleSkillSource(bf *BundleFile, skillName string) string {
+	rawBase := strings.Replace(bf.Repo, "https://github.com/", "https://raw.githubusercontent.com/", 1)
+	rawBase = strings.TrimRight(rawBase, "/")
+	skillsPath := strings.Trim(bf.SkillsPath, "/")
+	return rawBase + "/" + bf.Branch + "/" + skillsPath + "/" + skillName + "/"
 }
