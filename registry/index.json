@@ -9,7 +9,7 @@
       "author": "nitesh000",
       "tags": ["communication", "tokens", "terse"],
       "harnesses": ["all"],
-      "source": "https://raw.githubusercontent.com/nitesh000/skill-set/main/registry/skills/caveman/"
+      "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/caveman/"
     },
     {
       "name": "diagnose",
@@ -18,7 +18,7 @@
       "author": "nitesh000",
       "tags": ["debugging", "performance", "bugs"],
       "harnesses": ["all"],
-      "source": "https://raw.githubusercontent.com/nitesh000/skill-set/main/registry/skills/diagnose/"
+      "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/diagnose/"
     },
     {
       "name": "tdd",
@@ -27,7 +27,7 @@
       "author": "nitesh000",
       "tags": ["testing", "tdd", "development"],
       "harnesses": ["all"],
-      "source": "https://raw.githubusercontent.com/nitesh000/skill-set/main/registry/skills/tdd/"
+      "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/tdd/"
     },
     {
       "name": "write-a-skill",
@@ -36,7 +36,7 @@
       "author": "nitesh000",
       "tags": ["skills", "meta", "scaffolding"],
       "harnesses": ["all"],
-      "source": "https://raw.githubusercontent.com/nitesh000/skill-set/main/registry/skills/write-a-skill/"
+      "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/write-a-skill/"
     }
   ],
   "bundles": [
