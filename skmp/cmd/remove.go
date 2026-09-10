@@ -8,21 +8,29 @@ import (
 )
 
 var removeCmd = &cobra.Command{
-	Use:   "remove <skill-name>",
-	Short: "Uninstall a skill",
-	Args:  cobra.ExactArgs(1),
+	Use:   "remove <skill> [skill...]",
+	Short: "Uninstall one or more skills",
+	Args:  cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		name := args[0]
+		var failed []string
+		for _, name := range args {
+			if !harness.IsInstalled(name) {
+				fmt.Printf("✗ %s — not installed\n", name)
+				failed = append(failed, name)
+				continue
+			}
 
-		if !harness.IsInstalled(name) {
-			return fmt.Errorf("skill %q not installed", name)
+			if err := harness.Remove(name); err != nil {
+				fmt.Printf("✗ %s — %s\n", name, err)
+				failed = append(failed, name)
+				continue
+			}
+			fmt.Printf("✓ %s removed\n", name)
 		}
 
-		if err := harness.Remove(name); err != nil {
-			return err
+		if len(failed) > 0 {
+			return fmt.Errorf("%d skill(s) falied to remove", len(failed))
 		}
-
-		fmt.Printf("✓ %s removed\n", name)
 		return nil
 	},
 }
