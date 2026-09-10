@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"time"
+	"unique"
 )
 
 func SkillsDir() string {
@@ -171,4 +172,52 @@ func downloadFile(url, dest string) error {
 
 	_, err = io.Copy(f, res.Body)
 	return err
+}
+
+func Sync() (int, error) {
+	storeDir := StoreDir()
+	entries, err := os.ReadDir(storeDir)
+
+	if os.IsNotExist(err) {
+		return 0, nil
+	}
+
+	if err != nil {
+		return 0, err
+	}
+
+	// deduplicate harness sill dirs
+	seen := map[string]bool{}
+	var uniqueDirs []string
+	for _, h := range InstalledHarnesses() {
+		if !seen[h.SkillsDir] {
+			seen[h.SkillsDir] = true
+			uniqueDirs = append(uniqueDirs, h.SkillsDir)
+		}
+	}
+
+	linked := 0
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		name := e.Name()
+		skillStore := filepath.Join(storeDir, name)
+
+		for _, dir := range uniqueDirs {
+			link := filepath.Join(dir, name)
+			if _, err := os.Lstat(link); err == nil {
+				continue
+			}
+			os.MkdirAll(dir, 0755)
+			if runtime.GOOS == "windows" {
+				copyDir(skillStore, link)
+			} else {
+				os.Symlink(skillStore, link)
+			}
+			linked++
+		}
+	}
+
+	return linked, nil
 }
