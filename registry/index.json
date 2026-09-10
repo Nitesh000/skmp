@@ -1,0 +1,42 @@
+{
+  "updated": "2026-09-10T00:00:00Z",
+  "version": 1,
+  "skills": [
+    {
+      "name": "caveman",
+      "description": "Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler, articles, and pleasantries while keeping full technical accuracy. Use when user says 'caveman mode', 'less tokens', 'be brief', or invokes /caveman.",
+      "version": "1.0.0",
+      "author": "nitesh000",
+      "tags": ["communication", "tokens", "terse"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/nitesh000/skill-set/main/registry/skills/caveman/"
+    },
+    {
+      "name": "diagnose",
+      "description": "Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce → minimise → hypothesise → instrument → fix → regression-test. Use when user says 'diagnose this', 'debug this', reports a bug, or describes a performance regression.",
+      "version": "1.0.0",
+      "author": "nitesh000",
+      "tags": ["debugging", "performance", "bugs"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/nitesh000/skill-set/main/registry/skills/diagnose/"
+    },
+    {
+      "name": "tdd",
+      "description": "Test-driven development with red-green-refactor loop. Use when user wants to build features or fix bugs using TDD, mentions 'red-green-refactor', wants integration tests, or asks for test-first development.",
+      "version": "1.0.0",
+      "author": "nitesh000",
+      "tags": ["testing", "tdd", "development"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/nitesh000/skill-set/main/registry/skills/tdd/"
+    },
+    {
+      "name": "write-a-skill",
+      "description": "Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.",
+      "version": "1.0.0",
+      "author": "nitesh000",
+      "tags": ["skills", "meta", "scaffolding"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/nitesh000/skill-set/main/registry/skills/write-a-skill/"
+    }
+  ]
+}
