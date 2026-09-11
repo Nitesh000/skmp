@@ -15,3 +15,7 @@ labels: enhancement
 ## Alternatives considered
 
 <!-- other approaches you thought about -->
+
+## Affected harnesses (if relevant)
+
+<!-- pi / claude-code / antigravity / codex / cursor / opencode / all -->

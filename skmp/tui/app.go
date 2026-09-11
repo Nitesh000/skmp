@@ -442,11 +442,18 @@ func (m Model) installedBundles() []registry.Bundle {
 }
 
 func (m Model) bodyView() string {
-	outerH := m.height - 3
+	tabH := lipgloss.Height(m.tabBarView())
+	statusH := lipgloss.Height(m.statusBarView())
+	helpStr := "  j/k move · 1-4 tabs · / search · i install · x remove · ? help · q quit"
+	if m.width < minWidth {
+		helpStr = "  j/k move · 1-4 tabs · ? help · q quit"
+	}
+	helpH := lipgloss.Height(mutedStyle.MaxWidth(m.width).Render(helpStr))
+	outerH := m.height - tabH - statusH - helpH
 	if outerH < 3 {
 		outerH = 3
 	}
-	innerH := outerH - 2
+	innerH := outerH - 1
 
 	if m.showHelp {
 		return lipgloss.Place(m.width, outerH, lipgloss.Center, lipgloss.Center, helpView())
@@ -466,7 +473,8 @@ func (m Model) bodyView() string {
 }
 
 func (m Model) paneList(w, h int) string {
-	return m.paneStyle(!m.detailFocus).Width(w).Height(h).Render(m.listView(w))
+	content := m.listView(w, h)
+	return m.paneStyle(!m.detailFocus).Width(w).Height(h).MaxHeight(h).Render(content)
 }
 
 func (m Model) paneDetail(w, h int) string {
@@ -476,7 +484,7 @@ func (m Model) paneDetail(w, h int) string {
 	} else {
 		content = m.skillDetailView(w)
 	}
-	return m.paneStyle(m.detailFocus).Width(w).Height(h).Render(scroll(content, m.detailScroll, h))
+	return m.paneStyle(m.detailFocus).Width(w).Height(h).MaxHeight(h).Render(scroll(content, m.detailScroll, h))
 }
 
 func (m Model) paneStyle(focused bool) lipgloss.Style {
@@ -484,6 +492,17 @@ func (m Model) paneStyle(focused bool) lipgloss.Style {
 		return activeBorderStyle
 	}
 	return borderStyle
+}
+
+func (m Model) viewport(total, height int) (offset, end int) {
+	if m.cursor >= height {
+		offset = m.cursor - height + 1
+	}
+	end = offset + height
+	if end > total {
+		end = total
+	}
+	return
 }
 
 // scroll drops the first offset lines, keeping at least one screen of content.
@@ -498,14 +517,14 @@ func scroll(content string, offset, height int) string {
 	return strings.Join(lines[offset:], "\n")
 }
 
-func (m Model) listView(w int) string {
+func (m Model) listView(w, h int) string {
 	if m.showingBundles() {
-		return m.bundlesListView(w)
+		return m.bundlesListView(w, h)
 	}
-	return m.skillsListView(w)
+	return m.skillsListView(w, h)
 }
 
-func (m Model) skillsListView(w int) string {
+func (m Model) skillsListView(w, h int) string {
 	skills := m.visibleSkills()
 	if len(skills) == 0 {
 		if m.activeTab == tabMySkills {
@@ -514,14 +533,15 @@ func (m Model) skillsListView(w int) string {
 		return mutedStyle.Render("  no skills found")
 	}
 
+	offset, end := m.viewport(len(skills), h)
 	var s strings.Builder
-	for i, skill := range skills {
-		s.WriteString(m.row(i, m.skillBadge(skill.Name), skill.Name, "", w))
+	for i := offset; i < end; i++ {
+		s.WriteString(m.row(i, m.skillBadge(skills[i].Name), skills[i].Name, "", w))
 	}
 	return s.String()
 }
 
-func (m Model) bundlesListView(w int) string {
+func (m Model) bundlesListView(w, h int) string {
 	bundles := m.visibleBundles()
 	if len(bundles) == 0 {
 		if m.activeTab == tabMyBundles {
@@ -530,10 +550,11 @@ func (m Model) bundlesListView(w int) string {
 		return mutedStyle.Render("  no bundles found")
 	}
 
+	offset, end := m.viewport(len(bundles), h)
 	var s strings.Builder
-	for i, b := range bundles {
-		count := fmt.Sprintf(" (%d/%d)", m.installedIn(b), len(b.Skills))
-		s.WriteString(m.row(i, m.bundleBadge(b), b.Name, count, w))
+	for i := offset; i < end; i++ {
+		count := fmt.Sprintf(" (%d/%d)", m.installedIn(bundles[i]), len(bundles[i].Skills))
+		s.WriteString(m.row(i, m.bundleBadge(bundles[i]), bundles[i].Name, count, w))
 	}
 	return s.String()
 }

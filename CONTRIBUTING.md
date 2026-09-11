@@ -60,15 +60,15 @@ Open `registry/index.json` and add your skill to the `skills` array:
 - `description` — shown in search results and TUI detail pane
 - `version` — semver, matches what's in your repo
 - `author` — your GitHub username
-- `tags` — 2-5 tags that describe the skill's purpose
+- `tags` — 2–5 tags that describe the skill's purpose
 - `harnesses` — `["all"]` works for most skills; specify `["pi", "claude-code"]` etc. if it's harness-specific
 - `source` — raw GitHub URL to the folder containing `SKILL.md` (trailing slash required)
 
 ### 3. Open a PR
 
 ```bash
-git clone https://github.com/nitesh000/skill-set
-cd skill-set
+git clone https://github.com/Nitesh000/skmp
+cd skmp
 # edit registry/index.json
 git checkout -b add-skill-your-skill-name
 git add registry/index.json
@@ -76,7 +76,7 @@ git commit -m "feat: add skill your-skill-name"
 git push origin add-skill-your-skill-name
 ```
 
-Open a PR. The checklist will be verified before merge:
+PR checklist (verified before merge):
 
 - [ ] `SKILL.md` is reachable at the `source` URL
 - [ ] `name` is unique in the registry
@@ -107,9 +107,9 @@ Add to the `bundles` array in `registry/index.json`:
 **Fields:**
 - `name` — `author/bundle-name` format, must be unique
 - `skills_path` — path inside your repo where skill folders live (e.g. `skills`, `registry/skills`)
-- `skills` — list of skill names in the bundle; each will be downloaded from `repo/branch/skills_path/<name>/`
+- `skills` — list of skill names in the bundle; each will be fetched from `repo/branch/skills_path/<name>/`
 
-Every skill listed in a bundle **must also be individually listed** in the `skills` array. Bundles are a convenience shortcut, not a namespace — every skill must be independently installable via `skmp add <name>`. PRs that add a bundle without corresponding individual skill entries will be asked to add them before merge.
+Every skill listed in a bundle **must also be individually listed** in the `skills` array. Bundles are a convenience shortcut — every skill must be independently installable via `skmp add <name>`. PRs that add a bundle without corresponding individual skill entries will be asked to add them before merge.
 
 ---
 
@@ -118,8 +118,8 @@ Every skill listed in a bundle **must also be individually listed** in the `skil
 ### Setup
 
 ```bash
-git clone https://github.com/nitesh000/skill-set
-cd skill-set/skmp
+git clone https://github.com/Nitesh000/skmp
+cd skmp/skmp
 go mod download
 go build ./...
 ```
@@ -137,24 +137,36 @@ go run main.go add tdd   # add command
 ```
 skmp/
 ├── cmd/          — Cobra CLI commands (one file per command)
-├── registry/     — index fetching, caching, search
+├── config/       — version constant
+├── registry/     — index fetching, caching, search (Bleve)
 ├── harness/      — harness detection, skill install/remove/sync
 └── tui/          — Bubbletea TUI (app.go = model/update/view, styles.go = lipgloss styles)
 ```
 
+### Supported harnesses
+
+| Harness | Detection | Skills path |
+| --- | --- | --- |
+| pi | `pi` in PATH | `~/.agents/skills/` |
+| Claude Code | `claude` in PATH | `~/.claude/skills/` |
+| Antigravity | `~/.antigravity-ide/antigravity-ide/bin/agy-ide` exists | `~/.gemini/antigravity-ide/skills/` |
+| Codex | `codex` in PATH | `~/.codex/skills/` |
+| Cursor | `~/.cursor/mcp.json` exists | `~/.cursor/skills/` |
+| OpenCode | `opencode` in PATH | config-based (`opencode.jsonc`) |
+
 ### Guidelines
 
 - Keep commands in `cmd/` thin — logic belongs in `registry/` or `harness/`
-- No new dependencies without discussion — the binary size matters
-- Cross-platform: test on Mac + Linux, be mindful of Windows paths and symlinks
+- No new dependencies without discussion — binary size matters
+- Cross-platform: be mindful of Windows paths and symlinks (copy fallback exists)
 - Error messages should tell the user what to do next, not just what went wrong
 
 ### Commit style
 
 ```
-feat: add skmp sync command
-fix: handle missing ~/.agents/skills dir gracefully
-docs: update contributing guide
+feat: add antigravity harness support
+fix: correct claude-code skills path to ~/.claude/skills
+docs: update supported harnesses table
 refactor: deduplicate harness symlink logic
 ```
 

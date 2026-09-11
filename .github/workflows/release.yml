@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   contents: write # Needed for GoReleaser to create the GitHub Release
@@ -22,8 +22,8 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: 'skmp/go.mod'
-          cache-dependency-path: 'skmp/go.sum'
+          go-version-file: "skmp/go.mod"
+          cache-dependency-path: "skmp/go.sum"
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
@@ -46,8 +46,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Sync version from git tag
+        working-directory: ./npm
+        run: |
+          TAG=${GITHUB_REF_NAME#v}
+          npm version "$TAG" --no-git-tag-version
 
       - name: Publish to NPM
         working-directory: ./npm

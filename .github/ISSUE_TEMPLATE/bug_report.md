@@ -22,9 +22,9 @@ labels: bug
 
 ## Environment
 
-- skmp version: (`skmp --version`)
+- skmp version: (`skmp version`)
 - OS + arch:
-- Harness(es) installed:
+- Harness(es) installed: (pi / claude-code / antigravity / codex / cursor / opencode)
 
 ## Output / error message
 

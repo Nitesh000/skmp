@@ -1,18 +1,14 @@
 {
+  "version": 1,
+  "updated": "2026-09-11T13:30:42Z",
   "skills": [
     {
       "name": "caveman",
       "description": "Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler, articles, and pleasantries while keeping full technical accuracy. Use when user says 'caveman mode', 'less tokens', 'be brief', or invokes /caveman.",
       "version": "1.0.0",
       "author": "nitesh000",
-      "tags": [
-        "communication",
-        "tokens",
-        "terse"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["communication", "tokens", "terse"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/caveman/"
     },
     {
@@ -20,14 +16,8 @@
       "description": "Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce → minimise → hypothesise → instrument → fix → regression-test. Use when user says 'diagnose this', 'debug this', reports a bug, or describes a performance regression.",
       "version": "1.0.0",
       "author": "nitesh000",
-      "tags": [
-        "debugging",
-        "performance",
-        "bugs"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["debugging", "performance", "bugs"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/diagnose/"
     },
     {
@@ -35,13 +25,8 @@
       "description": "Test-driven development skill for writing tests first and guiding the red-green-refactor cycle.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "testing",
-        "tdd"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["testing", "tdd"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/tdd/"
     },
     {
@@ -49,14 +34,8 @@
       "description": "Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.",
       "version": "1.0.0",
       "author": "nitesh000",
-      "tags": [
-        "skills",
-        "meta",
-        "scaffolding"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["skills", "meta", "scaffolding"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/write-a-skill/"
     },
     {
@@ -64,14 +43,8 @@
       "description": "Ask which skill or flow fits your situation and route through the skills in this repo.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "router",
-        "workflow",
-        "engineering"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["router", "workflow", "engineering"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/ask-matt/"
     },
     {
@@ -79,15 +52,8 @@
       "description": "This skill reviews code changes against repository coding standards and the originating issue spec.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "code-review",
-        "git-diff",
-        "standards",
-        "spec"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["code-review", "git-diff", "standards", "spec"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/code-review/"
     },
     {
@@ -95,14 +61,8 @@
       "description": "Shared vocabulary for designing deep modules.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "design",
-        "codebase",
-        "testability"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["design", "codebase", "testability"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/codebase-design/"
     },
     {
@@ -110,13 +70,8 @@
       "description": "Diagnosis loop for hard bugs and performance regressions.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "debugging",
-        "performance"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["debugging", "performance"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/diagnosing-bugs/"
     },
     {
@@ -124,13 +79,8 @@
       "description": "Build and sharpen a project's domain model.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "domain-modeling",
-        "architecture"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["domain-modeling", "architecture"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/domain-modeling/"
     },
     {
@@ -138,13 +88,8 @@
       "description": "A relentless interview to sharpen a plan or design, which also creates docs (ADR's and glossary) as we go.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "interview",
-        "documentation"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["interview", "documentation"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/grill-with-docs/"
     },
     {
@@ -152,13 +97,8 @@
       "description": "Implement a piece of work based on a spec or set of tickets.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "implement",
-        "engineering"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["implement", "engineering"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/implement/"
     },
     {
@@ -166,15 +106,8 @@
       "description": "Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "architecture",
-        "refactoring",
-        "analysis",
-        "deepening"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["architecture", "refactoring", "analysis", "deepening"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/improve-codebase-architecture/"
     },
     {
@@ -182,15 +115,8 @@
       "description": "Build a throwaway prototype to answer a design question.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "prototype",
-        "UI",
-        "logic",
-        "design"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["prototype", "UI", "logic", "design"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/prototype/"
     },
     {
@@ -198,14 +124,8 @@
       "description": "Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "research",
-        "background-agent",
-        "markdown"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["research", "background-agent", "markdown"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/research/"
     },
     {
@@ -213,15 +133,8 @@
       "description": "Use when you need to resolve an in-progress git merge/rebase conflict.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "git",
-        "merge-conflict",
-        "rebase",
-        "version-control"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["git", "merge-conflict", "rebase", "version-control"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/resolving-merge-conflicts/"
     },
     {
@@ -229,13 +142,8 @@
       "description": "Configure the repository for the engineering skills by setting up the issue tracker, triage labels, and domain documentation layout.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "setup",
-        "repo"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["setup", "repo"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/setup-matt-pocock-skills/"
     },
     {
@@ -243,14 +151,8 @@
       "description": "Turn the current conversation into a specification and publish it to the project issue tracker without interviewing the user.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "engineering",
-        "spec",
-        "issue-tracker"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["engineering", "spec", "issue-tracker"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/to-spec/"
     },
     {
@@ -258,14 +160,8 @@
       "description": "Break a plan, spec, or conversation into tracer‑bullet tickets with blocking edges and publish them to the configured tracker.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "engineering",
-        "issue-tracker",
-        "vertical-slice"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["engineering", "issue-tracker", "vertical-slice"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/to-tickets/"
     },
     {
@@ -273,14 +169,8 @@
       "description": "Move issues and external PRs through a state machine of triage roles, categorise, verify, grill if needed, and write agent-ready briefs.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "triage",
-        "issue-tracking",
-        "engineering"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["triage", "issue-tracking", "engineering"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/triage/"
     },
     {
@@ -288,14 +178,8 @@
       "description": "Plan large-scale work as a shared map of decision tickets on your issue tracker.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "planning",
-        "issue-tracking",
-        "decision-tickets"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["planning", "issue-tracking", "decision-tickets"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/wayfinder/"
     },
     {
@@ -303,14 +187,8 @@
       "description": "Generate an interactive bash wizard that walks a human through steps only they can perform.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "bash",
-        "wizard",
-        "automation"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["bash", "wizard", "automation"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/wizard/"
     },
     {
@@ -318,13 +196,8 @@
       "description": "A relentless interview to sharpen a plan or design.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "productivity",
-        "planning"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["productivity", "planning"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/grill-me/"
     },
     {
@@ -332,13 +205,8 @@
       "description": "Grill the user relentlessly to stress-test their decision-making and planning.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "productivity",
-        "analysis"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["productivity", "analysis"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/grilling/"
     },
     {
@@ -346,13 +214,8 @@
       "description": "Compact the current conversation into a handoff document for another agent to pick up.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "productivity",
-        "handoff"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["productivity", "handoff"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/handoff/"
     },
     {
@@ -360,14 +223,8 @@
       "description": "Teach the user a new skill or concept within the workspace.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "education",
-        "learning",
-        "productivity"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["education", "learning", "productivity"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/teach/"
     },
     {
@@ -375,14 +232,8 @@
       "description": "Turn a decision you can't fully answer into a questionnaire for someone else to fill in.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": [
-        "productivity",
-        "questionnaire",
-        "decision-support"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["productivity", "questionnaire", "decision-support"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/to-questionnaire/"
     },
     {
@@ -390,13 +241,8 @@
       "description": "Stop the message that did not land; re-pitch it.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "productivity",
-        "communication"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["productivity", "communication"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/wait-what/"
     },
     {
@@ -404,13 +250,8 @@
       "description": "Writing documents for agents, such as skills, AGENTS.md, or CLAUDE.md.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": [
-        "writing",
-        "agents"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["writing", "agents"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/writing-for-agents/"
     },
     {
@@ -418,15 +259,926 @@
       "description": "Behavioral guidelines to reduce common LLM coding mistakes.",
       "version": "1.0.0",
       "author": "multica-ai",
-      "tags": [
-        "guidelines",
-        "LLM",
-        "best-practices"
-      ],
-      "harnesses": [
-        "all"
-      ],
+      "tags": ["guidelines", "LLM", "best-practices"],
+      "harnesses": ["all"],
       "source": "https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/skills/karpathy-guidelines/"
+    },
+    {
+      "name": "autoplan",
+      "description": "Auto-review pipeline that sequentially runs CEO, design, engineering, and DX reviews with automated decisions based on six principles.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["review", "automation", "pipeline"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//autoplan/"
+    },
+    {
+      "name": "benchmark-models",
+      "description": "Cross-model benchmark for gstack skills.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["benchmark", "model-comparison"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//benchmark-models/"
+    },
+    {
+      "name": "benchmark",
+      "description": "Performance regression detection.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["performance", "benchmark"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//benchmark/"
+    },
+    {
+      "name": "browse",
+      "description": "Drive a real browser through Aside to open a page, read it, click through a flow, take screenshots, and check console errors.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["browser", "web"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//browse/"
+    },
+    {
+      "name": "canary",
+      "description": "Post-deploy canary monitoring.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["monitoring", "canary", "post-deploy"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//canary/"
+    },
+    {
+      "name": "careful",
+      "description": "Provides safety guardrails to warn before executing destructive commands.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["safety", "command"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//careful/"
+    },
+    {
+      "name": "codex",
+      "description": "Wraps OpenAI Codex in a CLI with three modes: review, challenge, and consult.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["code-review", "AI"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//codex/"
+    },
+    {
+      "name": "context-restore",
+      "description": "Restores the working context that was previously saved by /context-save.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["context", "restore", "gstack"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//context-restore/"
+    },
+    {
+      "name": "context-save",
+      "description": "Save the current working context for later restoration.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["context", "git"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//context-save/"
+    },
+    {
+      "name": "cso",
+      "description": "Chief Security Officer mode for gstack.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["security", "audit"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//cso/"
+    },
+    {
+      "name": "design-consultation",
+      "description": "Design consultation: understands your product, researches the landscape, proposes a complete design system, and generates font and color previews.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["design", "consultation"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//design-consultation/"
+    },
+    {
+      "name": "design-html",
+      "description": "Design finalization: generates production-quality Pretext-native HTML/CSS.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["design", "html"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//design-html/"
+    },
+    {
+      "name": "design-review",
+      "description": "Design-review audits visual design for inconsistencies, spacing, hierarchy, AI slop patterns, and slow interactions and automatically fixes them.",
+      "version": "2.0.0",
+      "author": "garrytan",
+      "tags": ["design", "visual-audit", "qa"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//design-review/"
+    },
+    {
+      "name": "design-shotgun",
+      "description": "Design shotgun: generate multiple AI design variants, open a comparison board, collect structured feedback, and iterate.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["design", "ai", "variant", "feedback"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//design-shotgun/"
+    },
+    {
+      "name": "devex-review",
+      "description": "Live developer experience audit.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["developer-experience", "audit"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//devex-review/"
+    },
+    {
+      "name": "diagram",
+      "description": "Turn an English description (or mermaid source) into a diagram triplet: the source, an editable .excalidraw file you can open on excalidraw.com, and rendered SVG + PNG. (gstack)",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["diagram", "mermaid", "excalidraw", "render"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//diagram/"
+    },
+    {
+      "name": "document-generate",
+      "description": "Generate missing documentation from scratch for a feature, module, or entire project.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["documentation", "generation"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//document-generate/"
+    },
+    {
+      "name": "document-release",
+      "description": "Post-ship documentation update.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["documentation", "post-ship"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//document-release/"
+    },
+    {
+      "name": "freeze",
+      "description": "Restricts file edits to a specific directory for the session.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["file-edit", "directory-lock", "session"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//freeze/"
+    },
+    {
+      "name": "gstack-upgrade",
+      "description": "Upgrade gstack to the latest version.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["gstack", "upgrade"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//gstack-upgrade/"
+    },
+    {
+      "name": "guard",
+      "description": "Full safety mode that warns about destructive commands and restricts edits to a specified directory.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": [
+        "safety",
+        "guard",
+        "destructive-command-warning",
+        "edit-restriction"
+      ],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//guard/"
+    },
+    {
+      "name": "health",
+      "description": "Code quality dashboard.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["code-quality", "dashboard", "health"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//health/"
+    },
+    {
+      "name": "investigate",
+      "description": "Systematic debugging with root cause investigation.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["debugging", "investigation"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//investigate/"
+    },
+    {
+      "name": "ios-clean",
+      "description": "Remove the DebugBridge SPM package and all #if DEBUG wiring from an iOS app.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["ios", "cleanup", "debug"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//ios-clean/"
+    },
+    {
+      "name": "ios-design-review",
+      "description": "Visual design audit for iOS apps on real hardware.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["design", "iOS", "audit"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//ios-design-review/"
+    },
+    {
+      "name": "ios-fix",
+      "description": "Autonomous iOS bug fixer for gstack.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["ios", "bugfix"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//ios-fix/"
+    },
+    {
+      "name": "ios-qa",
+      "description": "Live-device iOS QA for SwiftUI apps.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["ios", "qa", "swiftui", "ios-qa"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//ios-qa/"
+    },
+    {
+      "name": "ios-sync",
+      "description": "Regenerate the iOS debug bridge against the latest upstream gstack templates.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["ios", "debug", "bridge", "templates", "sync"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//ios-sync/"
+    },
+    {
+      "name": "land-and-deploy",
+      "description": "Land and deploy workflow.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["deployment", "automation", "ci"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//land-and-deploy/"
+    },
+    {
+      "name": "landing-report",
+      "description": "Read-only queue dashboard for workspace-aware ship.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["landing-report", "queue", "ship", "workspace-aware"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//landing-report/"
+    },
+    {
+      "name": "learn",
+      "description": "Manage project learnings.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["project", "learnings"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//learn/"
+    },
+    {
+      "name": "make-pdf",
+      "description": "Turn any markdown file into a publication-quality PDF.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["markdown", "pdf", "generation"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//make-pdf/"
+    },
+    {
+      "name": "office-hours",
+      "description": "Facilitates brainstorming and design support for new product ideas via office hours sessions.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["office-hours", "brainstorming"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//office-hours/"
+    },
+    {
+      "name": "open-gstack-browser",
+      "description": "Launch GStack Browser — AI-controlled Chromium with the sidebar extension baked in.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["browser", "ai-controlled"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//open-gstack-browser/"
+    },
+    {
+      "name": "pair-agent",
+      "description": "Pair a remote AI agent with your browser.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["remote-agent", "browser"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//pair-agent/"
+    },
+    {
+      "name": "plan-ceo-review",
+      "description": "Plan review for CEO/founder mode.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["plan", "review", "ceo"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//plan-ceo-review/"
+    },
+    {
+      "name": "plan-design-review",
+      "description": "Designer's eye plan review — interactive, like CEO and Eng review.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["design", "review", "plan"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//plan-design-review/"
+    },
+    {
+      "name": "plan-devex-review",
+      "description": "Interactive developer experience plan review (gstack).",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["developer-experience", "plan-review", "gstack"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//plan-devex-review/"
+    },
+    {
+      "name": "plan-eng-review",
+      "description": "Eng manager-mode plan review.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["plan", "review"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//plan-eng-review/"
+    },
+    {
+      "name": "plan-tune",
+      "description": "Plan-tune adjusts question sensitivity and developer profile settings in gstack.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["question-tuning", "developer-profile"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//plan-tune/"
+    },
+    {
+      "name": "qa-only",
+      "description": "Report-only QA testing.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["qa", "report", "testing"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//qa-only/"
+    },
+    {
+      "name": "qa",
+      "description": "Systematically QA test a web application and fix bugs found.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["qa", "testing"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//qa/"
+    },
+    {
+      "name": "retro",
+      "description": "Weekly engineering retrospective.",
+      "version": "2.0.0",
+      "author": "garrytan",
+      "tags": ["retro", "engineering", "gstack", "weekly"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//retro/"
+    },
+    {
+      "name": "review",
+      "description": "Pre-landing PR review.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["review", "pr"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//review/"
+    },
+    {
+      "name": "scrape",
+      "description": "Pull data from a web page through the Aside browser using your real, already signed-in sessions.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["web-scraping", "browser"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//scrape/"
+    },
+    {
+      "name": "setup-browser-cookies",
+      "description": "Import cookies from your real Chromium browser into the headless browse session.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["browser", "cookies", "automation"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//setup-browser-cookies/"
+    },
+    {
+      "name": "setup-deploy",
+      "description": "Configure deployment settings for /land-and-deploy.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["deployment", "configuration"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//setup-deploy/"
+    },
+    {
+      "name": "setup-gbrain",
+      "description": "Set up gbrain for this coding agent: install the CLI, initialize a local PGLite or Supabase brain, register MCP, capture per-remote trust policy.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["cli", "brain", "mcp"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//setup-gbrain/"
+    },
+    {
+      "name": "ship",
+      "description": "Ship workflow: detect + merge base branch, run tests, review diff, bump VERSION, update CHANGELOG, commit, push, create PR. (gstack)",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["deployment", "git", "ci-cd"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//ship/"
+    },
+    {
+      "name": "skillify",
+      "description": "Codify the most recent successful /scrape flow into a permanent browser-skill on disk.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["scrape", "automation", "browser"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//skillify/"
+    },
+    {
+      "name": "spec",
+      "description": "Turn vague intent into a precise, executable spec in five phases.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["issue", "spec", "automation"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//spec/"
+    },
+    {
+      "name": "sync-gbrain",
+      "description": "This skill synchronizes the gbrain database with the repository's code and updates the agent search guidance in CLAUDE.md.",
+      "version": "1.0.0",
+      "author": "Garry Tan",
+      "tags": ["sync", "gbrain"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//sync-gbrain/"
+    },
+    {
+      "name": "unfreeze",
+      "description": "Clears the freeze boundary set by /freeze, allowing edits to all directories again.",
+      "version": "1.0.0",
+      "author": "garrytan",
+      "tags": ["unfreeze", "edit", "filesystem"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/garrytan/gstack/main//unfreeze/"
+    },
+    {
+      "name": "academy-guide",
+      "description": "This skill recommends matching courses, tutorials, and use cases from Claude Academy when answering user questions about using Claude or its products.",
+      "version": "1.0.0",
+      "author": "Anthropics",
+      "tags": ["academy", "learning"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/academy-guide/"
+    },
+    {
+      "name": "algorithmic-art",
+      "description": "Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration.",
+      "version": "1.0.0",
+      "author": "Anthropics",
+      "tags": ["generative-art", "algorithmic-art", "p5js", "interactive-art"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/algorithmic-art/"
+    },
+    {
+      "name": "brand-guidelines",
+      "description": "Applies Anthropic's official brand colors and typography to any artifact that benefits from Anthropic's look-and-feel.",
+      "version": "1.0.0",
+      "author": "anthropics",
+      "tags": [
+        "branding",
+        "corporate-identity",
+        "visual-identity",
+        "post-processing",
+        "styling",
+        "brand-colors",
+        "typography",
+        "visual-formatting",
+        "visual-design"
+      ],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/brand-guidelines/"
+    },
+    {
+      "name": "canvas-design",
+      "description": "Create beautiful visual art in .png and .pdf documents using design philosophy.",
+      "version": "1.0.0",
+      "author": "Anthropics",
+      "tags": ["design", "visual-art", "canvas", "graphic"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/canvas-design/"
+    },
+    {
+      "name": "claude-api",
+      "description": "Reference for the Claude API / Anthropic SDK — model ids, pricing, params, streaming, tool use, MCP, agents, caching, token counting, model migration.",
+      "version": "1.0.0",
+      "author": "anthropics",
+      "tags": ["claude", "anthropic", "api", "sdk", "llm"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/claude-api/"
+    },
+    {
+      "name": "discernment-nudge",
+      "description": "The skill prompts the AI to ask follow-up questions that encourage users to verify facts, examine reasoning, and identify missing context before finalizing substantive responses.",
+      "version": "1.0.0",
+      "author": "anthropics",
+      "tags": ["ai", "verification", "decision-support"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/discernment-nudge/"
+    },
+    {
+      "name": "doc-coauthoring",
+      "description": "Guide users through a structured workflow for co-authoring documentation.",
+      "version": "1.0.0",
+      "author": "anthropics",
+      "tags": ["documentation", "workflow"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/doc-coauthoring/"
+    },
+    {
+      "name": "docx",
+      "description": "Creates, reads, edits, and manipulates Word (.docx/.dotx) documents, including formatting, images, and tracked changes.",
+      "version": "1.0.0",
+      "author": "anthropics",
+      "tags": ["docx", "word", "document", "formatting", "editing"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/docx/"
+    },
+    {
+      "name": "frontend-design",
+      "description": "Guides distinctive, intentional visual design decisions for UI projects, covering typography, color, layout, and purposeful motion.",
+      "version": "1.0.0",
+      "author": "anthropics",
+      "tags": ["frontend", "design"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/frontend-design/"
+    },
+    {
+      "name": "internal-comms",
+      "description": "This skill provides guidelines for writing internal communications such as status reports, leadership updates, 3P updates, company newsletters, FAQs, incident reports, and project updates.",
+      "version": "1.0.0",
+      "author": "Anthropics",
+      "tags": [
+        "3p-updates",
+        "company-newsletter",
+        "company-comms",
+        "weekly-update",
+        "faqs",
+        "common-questions",
+        "updates",
+        "internal-comms"
+      ],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/internal-comms/"
+    },
+    {
+      "name": "mcp-builder",
+      "description": "Guide for creating high-quality MCP servers that enable LLMs to interact with external services through well-designed tools.",
+      "version": "1.0.0",
+      "author": "anthropics",
+      "tags": ["mcp", "server-development"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/mcp-builder/"
+    },
+    {
+      "name": "pdf",
+      "description": "This skill allows users to process PDF files, including reading, extracting text and tables, merging, splitting, rotating, watermarking, creating new PDFs, filling forms, encrypting, extracting images, and OCR scanning.",
+      "version": "1.0.0",
+      "author": "Anthropics",
+      "tags": ["pdf", "ocr"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/pdf/"
+    },
+    {
+      "name": "pptx",
+      "description": "Use this skill to create, edit, read, and manage .pptx or .potx files for slide decks, pitch decks, or presentations.",
+      "version": "1.0.0",
+      "author": "Anthropics",
+      "tags": ["pptx", "presentation"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/pptx/"
+    },
+    {
+      "name": "skill-creator",
+      "description": "Create new skills, modify and improve existing skills, and measure skill performance.",
+      "version": "1.0.0",
+      "author": "Anthropic",
+      "tags": ["skill-creation", "evaluation", "iteration"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/skill-creator/"
+    },
+    {
+      "name": "slack-gif-creator",
+      "description": "Provides knowledge, utilities, and constraints for creating animated GIFs optimized for Slack.",
+      "version": "1.0.0",
+      "author": "Anthropics",
+      "tags": ["gif", "slack", "animation", "pillow"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/slack-gif-creator/"
+    },
+    {
+      "name": "theme-factory",
+      "description": "Toolkit for applying predefined or custom theme styling to artifacts such as slides, documents, reports, and HTML landing pages.",
+      "version": "1.0.0",
+      "author": "Anthropics",
+      "tags": ["theme", "styling", "presentation", "design"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/theme-factory/"
+    },
+    {
+      "name": "web-artifacts-builder",
+      "description": "Provides tools to build complex claude.ai HTML artifacts with React, Tailwind CSS, and shadcn/ui.",
+      "version": "1.0.0",
+      "author": "Anthropics",
+      "tags": ["react", "frontend", "artifacts"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/web-artifacts-builder/"
+    },
+    {
+      "name": "webapp-testing",
+      "description": "Toolkit for interacting with and testing local web applications using Playwright.",
+      "version": "1.0.0",
+      "author": "anthropics",
+      "tags": ["playwright", "webapp-testing"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/webapp-testing/"
+    },
+    {
+      "name": "xlsx",
+      "description": "Use this skill to open, read, edit, or convert spreadsheet files and produce a spreadsheet file as deliverable.",
+      "version": "1.0.0",
+      "author": "anthropics",
+      "tags": ["excel", "spreadsheet"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/anthropics/skills/main/skills/xlsx/"
+    },
+    {
+      "name": "api-and-interface-design",
+      "description": "Provides guidelines for designing stable, well-documented APIs, module boundaries, and public interfaces.",
+      "version": "1.0.0",
+      "author": "Addy Osmani",
+      "tags": [
+        "api",
+        "interface-design",
+        "design",
+        "contract-first",
+        "rest",
+        "graphql"
+      ],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/api-and-interface-design/"
+    },
+    {
+      "name": "browser-testing-with-devtools",
+      "description": "Tests in real browsers via Chrome DevTools MCP to inspect the DOM, capture console errors, analyze network requests, profile performance, and verify visual output.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["testing", "browser", "devtools"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/browser-testing-with-devtools/"
+    },
+    {
+      "name": "ci-cd-and-automation",
+      "description": "Automates CI/CD pipeline setup and quality gates for projects.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": [
+        "ci",
+        "cd",
+        "automation",
+        "devops",
+        "pipeline",
+        "github-actions"
+      ],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/ci-cd-and-automation/"
+    },
+    {
+      "name": "code-review-and-quality",
+      "description": "Conducts multi-axis code review to assess correctness, readability, architecture, security, and performance before merging any change.",
+      "version": "1.0.0",
+      "author": "Addy Osmani",
+      "tags": ["code-review", "quality"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/code-review-and-quality/"
+    },
+    {
+      "name": "code-simplification",
+      "description": "Simplifies code for clarity without changing behavior, making it easier to read, maintain, or extend.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["code", "simplification"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/code-simplification/"
+    },
+    {
+      "name": "constraint-driven-development",
+      "description": "Establishes a project's quality bar as a written contract and stops agents quietly lowering it.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["quality", "constraints", "devops"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/constraint-driven-development/"
+    },
+    {
+      "name": "context-engineering",
+      "description": "Optimizes agent context setup to improve output quality and facilitate task switching.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["context", "engineering"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/context-engineering/"
+    },
+    {
+      "name": "debugging-and-error-recovery",
+      "description": "Guides systematic root-cause debugging for tests, builds, and runtime errors.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["debugging", "error-recovery", "root-cause"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/debugging-and-error-recovery/"
+    },
+    {
+      "name": "deprecation-and-migration",
+      "description": "Manages deprecation and migration of systems, APIs, features, and database schemas.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["deprecation", "migration"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/deprecation-and-migration/"
+    },
+    {
+      "name": "documentation-and-adrs",
+      "description": "Records decisions and documentation for architecture decisions, public APIs, and feature changes to aid future engineers and agents.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["documentation", "architecture-decision-records"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/documentation-and-adrs/"
+    },
+    {
+      "name": "doubt-driven-development",
+      "description": "Subjects every non-trivial decision to a fresh-context adversarial review before it stands.",
+      "version": "1.0.0",
+      "author": "Addy Osmani",
+      "tags": ["doubt", "adversarial-review", "non-trivial"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/doubt-driven-development/"
+    },
+    {
+      "name": "frontend-ui-engineering",
+      "description": "Build production-quality, accessible, responsive user-facing UIs, including components, layouts, and state management.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["frontend", "ui", "accessibility", "react"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/frontend-ui-engineering/"
+    },
+    {
+      "name": "git-workflow-and-versioning",
+      "description": "Provides guidelines and best practices for managing git workflow, versioning, branching, and releases.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["git", "versioning"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/git-workflow-and-versioning/"
+    },
+    {
+      "name": "idea-refine",
+      "description": "Refines raw ideas into sharp, actionable concepts through structured divergent and convergent thinking.",
+      "version": "1.0.0",
+      "author": "Addy Osmani",
+      "tags": ["ideation", "brainstorming", "concept-development"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/idea-refine/"
+    },
+    {
+      "name": "incremental-implementation",
+      "description": "Delivers changes incrementally in thin, verifiable slices.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["incremental", "development"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/incremental-implementation/"
+    },
+    {
+      "name": "interview-me",
+      "description": "Extracts what the user actually wants instead of what they think they should want.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["interview", "clarification"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/interview-me/"
+    },
+    {
+      "name": "observability-and-instrumentation",
+      "description": "Instruments code to make production behavior visible and diagnosable through logging, metrics, tracing, and alerting.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["observability", "instrumentation"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/observability-and-instrumentation/"
+    },
+    {
+      "name": "performance-optimization",
+      "description": "Optimizes application performance across frontend, backend, queries, and databases.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": [
+        "performance",
+        "optimization",
+        "frontend",
+        "backend",
+        "web-vitals"
+      ],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/performance-optimization/"
+    },
+    {
+      "name": "planning-and-task-breakdown",
+      "description": "Breaks work into ordered tasks.",
+      "version": "1.0.0",
+      "author": "Addy Osmani",
+      "tags": ["planning", "task-breakdown"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/planning-and-task-breakdown/"
+    },
+    {
+      "name": "security-and-hardening",
+      "description": "Hardens code against vulnerabilities by providing best practices for input handling, authentication, data storage, and dependency audits to secure web applications.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["security", "hardening", "web-security"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/security-and-hardening/"
+    },
+    {
+      "name": "shipping-and-launch",
+      "description": "Prepares production launches by providing a comprehensive pre-launch checklist, monitoring setup, staged rollout guidance, and rollback strategy.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["deployment", "feature-flags"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/shipping-and-launch/"
+    },
+    {
+      "name": "source-driven-development",
+      "description": "This skill ensures implementation decisions are based on official documentation to provide authoritative, up-to-date code.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["documentation", "source-driven-development", "verification"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/source-driven-development/"
+    },
+    {
+      "name": "spec-driven-development",
+      "description": "Creates specs before coding.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["specification", "project-management", "software-development"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/spec-driven-development/"
+    },
+    {
+      "name": "test-driven-development",
+      "description": "Drives development with tests using the red-green-refactor loop.",
+      "version": "1.0.0",
+      "author": "addyosmani",
+      "tags": ["testing", "tdd"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/test-driven-development/"
+    },
+    {
+      "name": "using-agent-skills",
+      "description": "Discovers and invokes agent skills to determine the appropriate workflow for a given task.",
+      "version": "1.0.0",
+      "author": "Addy Osmani",
+      "tags": ["agent", "skills", "workflow"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/addyosmani/agent-skills/main/skills/using-agent-skills/"
     }
   ],
   "bundles": [
@@ -437,12 +1189,7 @@
       "repo": "https://github.com/nitesh000/skmp",
       "branch": "master",
       "skills_path": "registry/skills",
-      "skills": [
-        "caveman",
-        "diagnose",
-        "tdd",
-        "write-a-skill"
-      ]
+      "skills": ["caveman", "diagnose", "tdd", "write-a-skill"]
     },
     {
       "name": "mattpocock/skills-engineering",
@@ -496,9 +1243,135 @@
       "repo": "https://github.com/multica-ai/andrej-karpathy-skills",
       "branch": "main",
       "skills_path": "skills",
+      "skills": ["karpathy-guidelines"]
+    },
+    {
+      "name": "garrytan/gstack",
+      "description": "All skills from garrytan/gstack ()",
+      "author": "garrytan",
+      "repo": "https://github.com/garrytan/gstack",
+      "branch": "main",
+      "skills_path": "",
       "skills": [
-        "karpathy-guidelines"
+        "autoplan",
+        "benchmark-models",
+        "benchmark",
+        "browse",
+        "canary",
+        "careful",
+        "codex",
+        "context-restore",
+        "context-save",
+        "cso",
+        "design-consultation",
+        "design-html",
+        "design-review",
+        "design-shotgun",
+        "devex-review",
+        "diagram",
+        "document-generate",
+        "document-release",
+        "freeze",
+        "gstack-upgrade",
+        "guard",
+        "health",
+        "investigate",
+        "ios-clean",
+        "ios-design-review",
+        "ios-fix",
+        "ios-qa",
+        "ios-sync",
+        "land-and-deploy",
+        "landing-report",
+        "learn",
+        "make-pdf",
+        "office-hours",
+        "open-gstack-browser",
+        "pair-agent",
+        "plan-ceo-review",
+        "plan-design-review",
+        "plan-devex-review",
+        "plan-eng-review",
+        "plan-tune",
+        "qa-only",
+        "qa",
+        "retro",
+        "review",
+        "scrape",
+        "setup-browser-cookies",
+        "setup-deploy",
+        "setup-gbrain",
+        "ship",
+        "skillify",
+        "spec",
+        "sync-gbrain",
+        "unfreeze"
+      ]
+    },
+    {
+      "name": "anthropics/skills",
+      "description": "All skills from anthropics/skills (skills)",
+      "author": "anthropics",
+      "repo": "https://github.com/anthropics/skills",
+      "branch": "main",
+      "skills_path": "skills",
+      "skills": [
+        "academy-guide",
+        "algorithmic-art",
+        "brand-guidelines",
+        "canvas-design",
+        "claude-api",
+        "discernment-nudge",
+        "doc-coauthoring",
+        "docx",
+        "frontend-design",
+        "internal-comms",
+        "mcp-builder",
+        "pdf",
+        "pptx",
+        "skill-creator",
+        "slack-gif-creator",
+        "theme-factory",
+        "web-artifacts-builder",
+        "webapp-testing",
+        "xlsx"
+      ]
+    },
+    {
+      "name": "addyosmani/agent-skills",
+      "description": "All skills from addyosmani/agent-skills (skills)",
+      "author": "addyosmani",
+      "repo": "https://github.com/addyosmani/agent-skills",
+      "branch": "main",
+      "skills_path": "skills",
+      "skills": [
+        "api-and-interface-design",
+        "browser-testing-with-devtools",
+        "ci-cd-and-automation",
+        "code-review-and-quality",
+        "code-simplification",
+        "constraint-driven-development",
+        "context-engineering",
+        "debugging-and-error-recovery",
+        "deprecation-and-migration",
+        "documentation-and-adrs",
+        "doubt-driven-development",
+        "frontend-ui-engineering",
+        "git-workflow-and-versioning",
+        "idea-refine",
+        "incremental-implementation",
+        "interview-me",
+        "observability-and-instrumentation",
+        "performance-optimization",
+        "planning-and-task-breakdown",
+        "security-and-hardening",
+        "shipping-and-launch",
+        "source-driven-development",
+        "spec-driven-development",
+        "test-driven-development",
+        "using-agent-skills"
       ]
     }
   ]
 }
+

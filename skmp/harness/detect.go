@@ -25,8 +25,13 @@ func Detect() []Harness {
 		},
 		{
 			Name:      "claude-code",
-			SkillsDir: agentsSkills,
+			SkillsDir: filepath.Join(home, ".claude", "skills"),
 			Installed: commandExists("claude"),
+		},
+		{
+			Name:      "antigravity",
+			SkillsDir: filepath.Join(home, ".gemini", "antigravity-ide", "skills"),
+			Installed: fileExists(filepath.Join(home, ".antigravity-ide", "antigravity-ide", "bin", "agy-ide")),
 		},
 		{
 			Name:        "opencode",

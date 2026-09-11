@@ -15,15 +15,20 @@ labels: registry
 
 ## Description
 
-<!-- one sentence, will appear in search results -->
+<!-- one sentence, will appear in search results and the TUI detail pane -->
 
 ## Tags
 
-<!-- 2-5 tags -->
+<!-- 2–5 tags -->
+
+## Compatible harnesses
+
+<!-- all / pi / claude-code / antigravity / codex / cursor / opencode -->
 
 ## Checklist
 
 - [ ] `SKILL.md` is publicly accessible at the source URL
-- [ ] Name is unique (checked against registry/index.json)
+- [ ] Name is unique (checked against `registry/index.json`)
 - [ ] Works with at least one harness
 - [ ] Description is one clear sentence
+- [ ] Source URL ends with `/`

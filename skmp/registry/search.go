@@ -4,7 +4,12 @@ import (
 	"strings"
 
 	bleve "github.com/blevesearch/bleve/v2"
+	"github.com/blevesearch/bleve/v2/analysis/analyzer/keyword"
+	"github.com/blevesearch/bleve/v2/analysis/token/lowercase"
+	"github.com/blevesearch/bleve/v2/mapping"
 )
+
+const analyzerName = "lowercase_keyword"
 
 var (
 	index        bleve.Index
@@ -15,15 +20,47 @@ var (
 	bundleByName map[string]Bundle
 )
 
+// newIndexMapping returns an index mapping that uses a custom analyzer which
+// lowercases but does NOT tokenize on punctuation. This means hyphens, dots,
+// and underscores are preserved, so wildcard queries like *write-a* match
+// write-a-skill without any string-scan fallback.
+func newIndexMapping() (*mapping.IndexMappingImpl, error) {
+	im := bleve.NewIndexMapping()
+
+	err := im.AddCustomAnalyzer(analyzerName, map[string]interface{}{
+		"type":      keyword.Name,
+		"token_filters": []string{lowercase.Name},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	fm := bleve.NewTextFieldMapping()
+	fm.Analyzer = analyzerName
+
+	dm := bleve.NewDocumentMapping()
+	dm.AddFieldMappingsAt("name", fm)
+	dm.AddFieldMappingsAt("description", fm)
+	dm.AddFieldMappingsAt("tags", fm)
+	dm.AddFieldMappingsAt("author", fm)
+	dm.AddFieldMappingsAt("skills", fm)
+
+	im.DefaultMapping = dm
+	return im, nil
+}
 func BuildIndex(skills []Skill, bundles []Bundle) error {
 	allSkills = skills
 	allBundles = bundles
 	skillByName = map[string]Skill{}
 	bundleByName = map[string]Bundle{}
 
+	im, err := newIndexMapping()
+	if err != nil {
+		return err
+	}
+
 	// --- Skills Index ---
-	mapping := bleve.NewIndexMapping()
-	idx, err := bleve.NewMemOnly(mapping)
+	idx, err := bleve.NewMemOnly(im)
 	if err != nil {
 		return err
 	}
@@ -46,7 +83,7 @@ func BuildIndex(skills []Skill, bundles []Bundle) error {
 	index = idx
 
 	// --- Bundles Index ---
-	bIdx, err := bleve.NewMemOnly(mapping)
+	bIdx, err := bleve.NewMemOnly(im)
 	if err != nil {
 		return err
 	}
@@ -139,15 +176,3 @@ func SearchBundles(query string) ([]Bundle, error) {
 	return out, nil
 }
 
-func fallback(query string) []Skill {
-	q := strings.ToLower(query)
-	var out []Skill
-	for _, s := range allSkills {
-		if strings.Contains(strings.ToLower(s.Name), q) ||
-			strings.Contains(strings.ToLower(s.Description), q) ||
-			strings.Contains(strings.ToLower(strings.Join(s.Tags, " ")), q) {
-			out = append(out, s)
-		}
-	}
-	return out
-}

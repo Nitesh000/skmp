@@ -6,3 +6,4 @@ scripts
 dist
 skmp/*.1
 !skmp/skmp.1
+ingest
