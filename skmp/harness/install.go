@@ -117,6 +117,12 @@ func symlinkToHarnessDirs(name, storeDir string) error {
 	for _, dir := range linkTargets() {
 		os.MkdirAll(dir, 0755)
 		link := filepath.Join(dir, name)
+		// Remove a stale symlink (broken link) before attempting to create.
+		if isSymlink(link) {
+			if _, err := os.Stat(link); os.IsNotExist(err) {
+				os.Remove(link)
+			}
+		}
 		if err := os.Symlink(storeDir, link); err != nil {
 			if !os.IsExist(err) {
 				return fmt.Errorf("symlink %s: %w", dir, err)
