@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/Nitesh000/skmp/tui"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 )
 
@@ -12,8 +13,9 @@ var rootCmd = &cobra.Command{
 	Short: "Skill marketplace for AI agent skills",
 	Long:  "A TUI application to install skills from Skill Marketplace with vim bindings for intuitive navigation.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("TUI Comming soon")
-		return nil
+		p := tea.NewProgram(tui.New(), tea.WithAltScreen())
+		_, err := p.Run()
+		return err
 	},
 }
 
