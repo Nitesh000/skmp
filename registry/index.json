@@ -5,8 +5,14 @@
       "description": "Ultra-compressed communication mode. Cuts token usage ~75% by dropping filler, articles, and pleasantries while keeping full technical accuracy. Use when user says 'caveman mode', 'less tokens', 'be brief', or invokes /caveman.",
       "version": "1.0.0",
       "author": "nitesh000",
-      "tags": ["communication", "tokens", "terse"],
-      "harnesses": ["all"],
+      "tags": [
+        "communication",
+        "tokens",
+        "terse"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/caveman/"
     },
     {
@@ -14,8 +20,14 @@
       "description": "Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce → minimise → hypothesise → instrument → fix → regression-test. Use when user says 'diagnose this', 'debug this', reports a bug, or describes a performance regression.",
       "version": "1.0.0",
       "author": "nitesh000",
-      "tags": ["debugging", "performance", "bugs"],
-      "harnesses": ["all"],
+      "tags": [
+        "debugging",
+        "performance",
+        "bugs"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/diagnose/"
     },
     {
@@ -23,8 +35,13 @@
       "description": "Test-driven development skill for writing tests first and guiding the red-green-refactor cycle.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["testing", "tdd"],
-      "harnesses": ["all"],
+      "tags": [
+        "testing",
+        "tdd"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/tdd/"
     },
     {
@@ -32,8 +49,14 @@
       "description": "Create new agent skills with proper structure, progressive disclosure, and bundled resources. Use when user wants to create, write, or build a new skill.",
       "version": "1.0.0",
       "author": "nitesh000",
-      "tags": ["skills", "meta", "scaffolding"],
-      "harnesses": ["all"],
+      "tags": [
+        "skills",
+        "meta",
+        "scaffolding"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/write-a-skill/"
     },
     {
@@ -41,8 +64,14 @@
       "description": "Ask which skill or flow fits your situation and route through the skills in this repo.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["router", "workflow", "engineering"],
-      "harnesses": ["all"],
+      "tags": [
+        "router",
+        "workflow",
+        "engineering"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/ask-matt/"
     },
     {
@@ -50,8 +79,15 @@
       "description": "This skill reviews code changes against repository coding standards and the originating issue spec.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["code-review", "git-diff", "standards", "spec"],
-      "harnesses": ["all"],
+      "tags": [
+        "code-review",
+        "git-diff",
+        "standards",
+        "spec"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/code-review/"
     },
     {
@@ -59,8 +95,14 @@
       "description": "Shared vocabulary for designing deep modules.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["design", "codebase", "testability"],
-      "harnesses": ["all"],
+      "tags": [
+        "design",
+        "codebase",
+        "testability"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/codebase-design/"
     },
     {
@@ -68,8 +110,13 @@
       "description": "Diagnosis loop for hard bugs and performance regressions.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["debugging", "performance"],
-      "harnesses": ["all"],
+      "tags": [
+        "debugging",
+        "performance"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/diagnosing-bugs/"
     },
     {
@@ -77,8 +124,13 @@
       "description": "Build and sharpen a project's domain model.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["domain-modeling", "architecture"],
-      "harnesses": ["all"],
+      "tags": [
+        "domain-modeling",
+        "architecture"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/domain-modeling/"
     },
     {
@@ -86,8 +138,13 @@
       "description": "A relentless interview to sharpen a plan or design, which also creates docs (ADR's and glossary) as we go.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["interview", "documentation"],
-      "harnesses": ["all"],
+      "tags": [
+        "interview",
+        "documentation"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/grill-with-docs/"
     },
     {
@@ -95,8 +152,13 @@
       "description": "Implement a piece of work based on a spec or set of tickets.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["implement", "engineering"],
-      "harnesses": ["all"],
+      "tags": [
+        "implement",
+        "engineering"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/implement/"
     },
     {
@@ -104,8 +166,15 @@
       "description": "Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["architecture", "refactoring", "analysis", "deepening"],
-      "harnesses": ["all"],
+      "tags": [
+        "architecture",
+        "refactoring",
+        "analysis",
+        "deepening"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/improve-codebase-architecture/"
     },
     {
@@ -113,8 +182,15 @@
       "description": "Build a throwaway prototype to answer a design question.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["prototype", "UI", "logic", "design"],
-      "harnesses": ["all"],
+      "tags": [
+        "prototype",
+        "UI",
+        "logic",
+        "design"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/prototype/"
     },
     {
@@ -122,8 +198,14 @@
       "description": "Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["research", "background-agent", "markdown"],
-      "harnesses": ["all"],
+      "tags": [
+        "research",
+        "background-agent",
+        "markdown"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/research/"
     },
     {
@@ -131,8 +213,15 @@
       "description": "Use when you need to resolve an in-progress git merge/rebase conflict.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["git", "merge-conflict", "rebase", "version-control"],
-      "harnesses": ["all"],
+      "tags": [
+        "git",
+        "merge-conflict",
+        "rebase",
+        "version-control"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/resolving-merge-conflicts/"
     },
     {
@@ -140,8 +229,13 @@
       "description": "Configure the repository for the engineering skills by setting up the issue tracker, triage labels, and domain documentation layout.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["setup", "repo"],
-      "harnesses": ["all"],
+      "tags": [
+        "setup",
+        "repo"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/setup-matt-pocock-skills/"
     },
     {
@@ -149,8 +243,14 @@
       "description": "Turn the current conversation into a specification and publish it to the project issue tracker without interviewing the user.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["engineering", "spec", "issue-tracker"],
-      "harnesses": ["all"],
+      "tags": [
+        "engineering",
+        "spec",
+        "issue-tracker"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/to-spec/"
     },
     {
@@ -158,8 +258,14 @@
       "description": "Break a plan, spec, or conversation into tracer‑bullet tickets with blocking edges and publish them to the configured tracker.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["engineering", "issue-tracker", "vertical-slice"],
-      "harnesses": ["all"],
+      "tags": [
+        "engineering",
+        "issue-tracker",
+        "vertical-slice"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/to-tickets/"
     },
     {
@@ -167,8 +273,14 @@
       "description": "Move issues and external PRs through a state machine of triage roles, categorise, verify, grill if needed, and write agent-ready briefs.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["triage", "issue-tracking", "engineering"],
-      "harnesses": ["all"],
+      "tags": [
+        "triage",
+        "issue-tracking",
+        "engineering"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/triage/"
     },
     {
@@ -176,8 +288,14 @@
       "description": "Plan large-scale work as a shared map of decision tickets on your issue tracker.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["planning", "issue-tracking", "decision-tickets"],
-      "harnesses": ["all"],
+      "tags": [
+        "planning",
+        "issue-tracking",
+        "decision-tickets"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/wayfinder/"
     },
     {
@@ -185,8 +303,14 @@
       "description": "Generate an interactive bash wizard that walks a human through steps only they can perform.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["bash", "wizard", "automation"],
-      "harnesses": ["all"],
+      "tags": [
+        "bash",
+        "wizard",
+        "automation"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/engineering/wizard/"
     },
     {
@@ -194,8 +318,13 @@
       "description": "A relentless interview to sharpen a plan or design.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["productivity", "planning"],
-      "harnesses": ["all"],
+      "tags": [
+        "productivity",
+        "planning"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/grill-me/"
     },
     {
@@ -203,8 +332,13 @@
       "description": "Grill the user relentlessly to stress-test their decision-making and planning.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["productivity", "analysis"],
-      "harnesses": ["all"],
+      "tags": [
+        "productivity",
+        "analysis"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/grilling/"
     },
     {
@@ -212,8 +346,13 @@
       "description": "Compact the current conversation into a handoff document for another agent to pick up.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["productivity", "handoff"],
-      "harnesses": ["all"],
+      "tags": [
+        "productivity",
+        "handoff"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/handoff/"
     },
     {
@@ -221,8 +360,14 @@
       "description": "Teach the user a new skill or concept within the workspace.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["education", "learning", "productivity"],
-      "harnesses": ["all"],
+      "tags": [
+        "education",
+        "learning",
+        "productivity"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/teach/"
     },
     {
@@ -230,8 +375,14 @@
       "description": "Turn a decision you can't fully answer into a questionnaire for someone else to fill in.",
       "version": "1.0.0",
       "author": "Matt Pocock",
-      "tags": ["productivity", "questionnaire", "decision-support"],
-      "harnesses": ["all"],
+      "tags": [
+        "productivity",
+        "questionnaire",
+        "decision-support"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/to-questionnaire/"
     },
     {
@@ -239,8 +390,13 @@
       "description": "Stop the message that did not land; re-pitch it.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["productivity", "communication"],
-      "harnesses": ["all"],
+      "tags": [
+        "productivity",
+        "communication"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/wait-what/"
     },
     {
@@ -248,9 +404,29 @@
       "description": "Writing documents for agents, such as skills, AGENTS.md, or CLAUDE.md.",
       "version": "1.0.0",
       "author": "mattpocock",
-      "tags": ["writing", "agents"],
-      "harnesses": ["all"],
+      "tags": [
+        "writing",
+        "agents"
+      ],
+      "harnesses": [
+        "all"
+      ],
       "source": "https://raw.githubusercontent.com/mattpocock/skills/main/skills/productivity/writing-for-agents/"
+    },
+    {
+      "name": "karpathy-guidelines",
+      "description": "Behavioral guidelines to reduce common LLM coding mistakes.",
+      "version": "1.0.0",
+      "author": "multica-ai",
+      "tags": [
+        "guidelines",
+        "LLM",
+        "best-practices"
+      ],
+      "harnesses": [
+        "all"
+      ],
+      "source": "https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/skills/karpathy-guidelines/"
     }
   ],
   "bundles": [
@@ -261,7 +437,12 @@
       "repo": "https://github.com/nitesh000/skmp",
       "branch": "master",
       "skills_path": "registry/skills",
-      "skills": ["caveman", "diagnose", "tdd", "write-a-skill"]
+      "skills": [
+        "caveman",
+        "diagnose",
+        "tdd",
+        "write-a-skill"
+      ]
     },
     {
       "name": "mattpocock/skills-engineering",
@@ -307,7 +488,17 @@
         "wait-what",
         "writing-for-agents"
       ]
+    },
+    {
+      "name": "multica-ai/andrej-karpathy-skills",
+      "description": "All skills from multica-ai/andrej-karpathy-skills (skills)",
+      "author": "multica-ai",
+      "repo": "https://github.com/multica-ai/andrej-karpathy-skills",
+      "branch": "main",
+      "skills_path": "skills",
+      "skills": [
+        "karpathy-guidelines"
+      ]
     }
   ]
 }
-

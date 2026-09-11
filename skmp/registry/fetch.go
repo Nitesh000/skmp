@@ -71,6 +71,11 @@ func Load() (*Index, error) {
 		return readCache()
 	}
 
+	return UpdateCache()
+}
+
+// UpdateCache ignores TTL and forces a network fetch
+func UpdateCache() (*Index, error) {
 	idx, err := fetchRemote()
 	if err != nil {
 		// network failed — fall back to stale cache if it exists

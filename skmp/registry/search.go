@@ -7,15 +7,21 @@ import (
 )
 
 var (
-	index       bleve.Index
-	allSkills   []Skill
-	skillByName map[string]Skill
+	index        bleve.Index
+	bundleIndex  bleve.Index
+	allSkills    []Skill
+	allBundles   []Bundle
+	skillByName  map[string]Skill
+	bundleByName map[string]Bundle
 )
 
-func BuildIndex(skills []Skill) error {
+func BuildIndex(skills []Skill, bundles []Bundle) error {
 	allSkills = skills
+	allBundles = bundles
 	skillByName = map[string]Skill{}
+	bundleByName = map[string]Bundle{}
 
+	// --- Skills Index ---
 	mapping := bleve.NewIndexMapping()
 	idx, err := bleve.NewMemOnly(mapping)
 	if err != nil {
@@ -37,12 +43,35 @@ func BuildIndex(skills []Skill) error {
 	if err := idx.Batch(batch); err != nil {
 		return err
 	}
-
 	index = idx
+
+	// --- Bundles Index ---
+	bIdx, err := bleve.NewMemOnly(mapping)
+	if err != nil {
+		return err
+	}
+
+	bBatch := bIdx.NewBatch()
+	for _, b := range bundles {
+		doc := map[string]string{
+			"name":        b.Name,
+			"description": b.Description,
+			"author":      b.Author,
+			"skills":      strings.Join(b.Skills, " "),
+		}
+		bBatch.Index(b.Name, doc)
+		bundleByName[b.Name] = b
+	}
+
+	if err := bIdx.Batch(bBatch); err != nil {
+		return err
+	}
+	bundleIndex = bIdx
+
 	return nil
 }
 
-func Search(query string) ([]Skill, error) {
+func SearchSkills(query string) ([]Skill, error) {
 	query = strings.TrimSpace(query)
 	if query == "" {
 		return allSkills, nil
@@ -55,7 +84,7 @@ func Search(query string) ([]Skill, error) {
 
 	// 2. Typo match (catches "cavman" -> "caveman")
 	fuzzy := bleve.NewFuzzyQuery(lowerQ)
-	fuzzy.Fuzziness = 3
+	fuzzy.Fuzziness = 2
 
 	// Combine them — if it matches EITHER wildcard OR fuzzy, include it
 	combined := bleve.NewDisjunctionQuery(wildcard, fuzzy)
@@ -74,6 +103,36 @@ func Search(query string) ([]Skill, error) {
 		if s, ok := skillByName[h.ID]; ok {
 			out = append(out, s)
 			seen[h.ID] = struct{}{}
+		}
+	}
+
+	return out, nil
+}
+
+func SearchBundles(query string) ([]Bundle, error) {
+	query = strings.TrimSpace(query)
+	if query == "" {
+		return allBundles, nil
+	}
+
+	lowerQ := strings.ToLower(query)
+
+	wildcard := bleve.NewWildcardQuery("*" + lowerQ + "*")
+	fuzzy := bleve.NewFuzzyQuery(lowerQ)
+	fuzzy.Fuzziness = 2
+
+	combined := bleve.NewDisjunctionQuery(wildcard, fuzzy)
+	req := bleve.NewSearchRequestOptions(combined, 50, 0, false)
+
+	res, err := bundleIndex.Search(req)
+	if err != nil {
+		return []Bundle{}, nil
+	}
+
+	var out []Bundle
+	for _, h := range res.Hits {
+		if b, ok := bundleByName[h.ID]; ok {
+			out = append(out, b)
 		}
 	}
 

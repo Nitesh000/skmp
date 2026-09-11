@@ -20,7 +20,8 @@ const (
 type Model struct {
 	skills      []registry.Skill
 	bundles     []registry.Bundle
-	filtered    []registry.Skill
+	filtered        []registry.Skill
+	filteredBundles []registry.Bundle
 	installed   map[string]bool
 	cursor      int
 	activeTab   tab
@@ -80,7 +81,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.skills = msg.idx.Skills
 		m.bundles = msg.idx.Bundles
 		m.filtered = msg.idx.Skills
-		registry.BuildIndex(m.skills)
+		m.filteredBundles = msg.idx.Bundles
+		registry.BuildIndex(m.skills, m.bundles)
 
 	case indexErrMsg:
 		m.err = msg.err
@@ -95,8 +97,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return m, tea.Batch(cmds...)
 			}
 
-			res, _ := registry.Search(m.searchInput.Value())
-			m.filtered = res
+			resSkills, _ := registry.SearchSkills(m.searchInput.Value())
+			resBundles, _ := registry.SearchBundles(m.searchInput.Value())
+			m.filtered = resSkills
+			m.filteredBundles = resBundles
 			m.cursor = 0
 
 			return m, tea.Batch(cmds...)
@@ -121,10 +125,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.cursor = 0
 
 		case "/":
-			if m.activeTab == tabSkills {
-				m.searchFocus = true
-				m.searchInput.Focus()
-			}
+			m.searchFocus = true
+			m.searchInput.Focus()
 		}
 
 		// clamp cursor
@@ -142,7 +144,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) listLen() int {
 	if m.activeTab == tabbundles {
-		return len(m.bundles)
+		return len(m.filteredBundles)
 	}
 
 	return len(m.filtered)
@@ -206,11 +208,11 @@ func (m Model) skillsListView() string {
 }
 
 func (m Model) bundlesListView() string {
-	if len(m.bundles) == 0 {
+	if len(m.filteredBundles) == 0 {
 		return "  no bundles found"
 	}
 	var s strings.Builder
-	for i, bun := range m.bundles {
+	for i, bun := range m.filteredBundles {
 		prefix := "  "
 		if i == m.cursor {
 			prefix = "▶ "
@@ -279,11 +281,11 @@ func (m Model) skillDetailView(w int) string {
 }
 
 func (m Model) bundleDetailsView(w int) string {
-	if len(m.bundles) == 0 || m.cursor >= len(m.bundles) {
+	if len(m.filteredBundles) == 0 || m.cursor >= len(m.filteredBundles) {
 		return mutedStyle.Render("select a bundle")
 	}
 
-	b := m.bundles[m.cursor]
+	b := m.filteredBundles[m.cursor]
 
 	// count installed skills in bundle
 	installedCount := 0
