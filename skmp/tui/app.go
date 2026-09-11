@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Nitesh000/skmp/harness"
 	"github.com/Nitesh000/skmp/registry"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -18,24 +19,31 @@ const (
 )
 
 type Model struct {
-	skills      []registry.Skill
-	bundles     []registry.Bundle
+	skills          []registry.Skill
+	bundles         []registry.Bundle
 	filtered        []registry.Skill
 	filteredBundles []registry.Bundle
-	installed   map[string]bool
-	cursor      int
-	activeTab   tab
-	width       int
-	height      int
-	err         error
-	searchInput textinput.Model
-	searchFocus bool
+	installed       map[string]bool
+	loading         map[string]bool
+	cursor          int
+	activeTab       tab
+	width           int
+	height          int
+	err             error
+	searchInput     textinput.Model
+	searchFocus     bool
 }
 
 // messages
 type (
-	indexLoadedMsg struct{ idx *registry.Index }
-	indexErrMsg    struct{ err error }
+	indexLoadedMsg     struct{ idx *registry.Index }
+	indexErrMsg        struct{ err error }
+	installedLoadedMsg struct{ skills []string }
+	actionCompleteMsg  struct {
+		name      string
+		isInstall bool
+		err       error
+	}
 )
 
 func New() Model {
@@ -45,12 +53,13 @@ func New() Model {
 
 	return Model{
 		installed:   map[string]bool{},
+		loading:     map[string]bool{},
 		searchInput: ti,
 	}
 }
 
 func (m Model) Init() tea.Cmd {
-	return tea.Batch(textinput.Blink, loadIndex())
+	return tea.Batch(textinput.Blink, loadIndex(), loadInstalled())
 }
 
 func loadIndex() tea.Cmd {
@@ -86,6 +95,19 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case indexErrMsg:
 		m.err = msg.err
+
+	case installedLoadedMsg:
+		for _, s := range msg.skills {
+			m.installed[s] = true
+		}
+
+	case actionCompleteMsg:
+		m.loading[msg.name] = false
+		if msg.err == nil {
+			m.installed[msg.name] = msg.isInstall
+		} else {
+			m.err = msg.err
+		}
 
 	case tea.KeyMsg:
 		// type inside search box
@@ -127,6 +149,47 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "/":
 			m.searchFocus = true
 			m.searchInput.Focus()
+
+		case "i":
+			var batch []tea.Cmd
+			if m.activeTab == tabSkills && len(m.filtered) > 0 {
+				s := m.filtered[m.cursor]
+				if !m.installed[s.Name] && !m.loading[s.Name] {
+					m.loading[s.Name] = true
+					batch = append(batch, doInstall(s.Name, s.Source))
+				}
+			} else if m.activeTab == tabbundles && len(m.filteredBundles) > 0 {
+				b := m.filteredBundles[m.cursor]
+				for _, skillName := range b.Skills {
+					if !m.installed[skillName] && !m.loading[skillName] {
+						m.loading[skillName] = true
+						source := registry.BundleSkillSource(&registry.BundleFile{
+							Repo: b.Repo, Branch: b.Branch, SkillsPath: b.SkillsPath,
+						}, skillName)
+						batch = append(batch, doInstall(skillName, source))
+					}
+				}
+			}
+			return m, tea.Batch(batch...)
+
+		case "x":
+			var batch []tea.Cmd
+			if m.activeTab == tabSkills && len(m.filtered) > 0 {
+				s := m.filtered[m.cursor]
+				if m.installed[s.Name] && !m.loading[s.Name] {
+					m.loading[s.Name] = true
+					batch = append(batch, doRemove(s.Name))
+				}
+			} else if m.activeTab == tabbundles && len(m.filteredBundles) > 0 {
+				b := m.filteredBundles[m.cursor]
+				for _, skillName := range b.Skills {
+					if m.installed[skillName] && !m.loading[skillName] {
+						m.loading[skillName] = true
+						batch = append(batch, doRemove(skillName))
+					}
+				}
+			}
+			return m, tea.Batch(batch...)
 		}
 
 		// clamp cursor
@@ -264,9 +327,13 @@ func (m Model) skillDetailView(w int) string {
 		tags += tagStyle.Render(t)
 	}
 
-	installed := mutedStyle.Render("○ not installed")
-	if m.installed[s.Name] {
-		installed = installedStyle.Render("● installed")
+	var status string
+	if m.loading[s.Name] {
+		status = mutedStyle.Render("⏳ working...")
+	} else if m.installed[s.Name] {
+		status = installedStyle.Render("● installed")
+	} else {
+		status = mutedStyle.Render("○ not installed")
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Left, titleStyle.Render(s.Name), "", wrapText(s.Description, w-4),
@@ -276,7 +343,7 @@ func (m Model) skillDetailView(w int) string {
 		labelStyle.Render("Harnesses")+valueStyle.Render(strings.Join(s.Harnesses, ",")),
 		labelStyle.Render("Tags")+tags,
 		"",
-		installed,
+		status,
 	)
 }
 
@@ -310,7 +377,9 @@ func (m Model) bundleDetailsView(w int) string {
 	skillList := ""
 	for _, name := range b.Skills {
 		badge := "  "
-		if m.installed[name] {
+		if m.loading[name] {
+			badge = mutedStyle.Render("⏳ ")
+		} else if m.installed[name] {
 			badge = installedStyle.Render("✓ ")
 		}
 		skillList += badge + name + "\n"
@@ -354,4 +423,25 @@ func wrapText(text string, width int) string {
 		lines = append(lines, line)
 	}
 	return strings.Join(lines, "\n")
+}
+
+func loadInstalled() tea.Cmd {
+	return func() tea.Msg {
+		skills, _ := harness.InstalledSkills()
+		return installedLoadedMsg{skills}
+	}
+}
+
+func doInstall(name, source string) tea.Cmd {
+	return func() tea.Msg {
+		err := harness.Install(name, source)
+		return actionCompleteMsg{name: name, isInstall: true, err: err}
+	}
+}
+
+func doRemove(name string) tea.Cmd {
+	return func() tea.Msg {
+		err := harness.Remove(name)
+		return actionCompleteMsg{name: name, isInstall: false, err: err}
+	}
 }
