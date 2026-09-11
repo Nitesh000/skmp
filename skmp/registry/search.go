@@ -48,13 +48,17 @@ func Search(query string) ([]Skill, error) {
 		return allSkills, nil
 	}
 
-	nameQ := bleve.NewFuzzyQuery(query)
-	nameQ.Fuzziness = 1
+	lowerQ := strings.ToLower(query)
 
-	tagQ := bleve.NewMatchQuery(query)
-	tagQ.SetField("tags")
+	// 1. Substring match (catches "c" in "caveman", or "dd" in "tdd")
+	wildcard := bleve.NewWildcardQuery("*" + lowerQ + "*")
 
-	combined := bleve.NewDisjunctionQuery(nameQ, tagQ)
+	// 2. Typo match (catches "cavman" -> "caveman")
+	fuzzy := bleve.NewFuzzyQuery(lowerQ)
+	fuzzy.Fuzziness = 3
+
+	// Combine them — if it matches EITHER wildcard OR fuzzy, include it
+	combined := bleve.NewDisjunctionQuery(wildcard, fuzzy)
 	req := bleve.NewSearchRequestOptions(combined, 50, 0, false)
 
 	res, err := index.Search(req)

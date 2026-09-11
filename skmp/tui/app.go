@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Nitesh000/skmp/registry"
+	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -17,15 +18,17 @@ const (
 )
 
 type Model struct {
-	skills    []registry.Skill
-	bundles   []registry.Bundle
-	filtered  []registry.Skill
-	installed map[string]bool
-	cursor    int
-	activeTab tab
-	width     int
-	height    int
-	err       error
+	skills      []registry.Skill
+	bundles     []registry.Bundle
+	filtered    []registry.Skill
+	installed   map[string]bool
+	cursor      int
+	activeTab   tab
+	width       int
+	height      int
+	err         error
+	searchInput textinput.Model
+	searchFocus bool
 }
 
 // messages
@@ -35,13 +38,18 @@ type (
 )
 
 func New() Model {
+	ti := textinput.New()
+	ti.Placeholder = "search..."
+	ti.Width = 30
+
 	return Model{
-		installed: map[string]bool{},
+		installed:   map[string]bool{},
+		searchInput: ti,
 	}
 }
 
 func (m Model) Init() tea.Cmd {
-	return loadIndex()
+	return tea.Batch(textinput.Blink, loadIndex())
 }
 
 func loadIndex() tea.Cmd {
@@ -55,6 +63,13 @@ func loadIndex() tea.Cmd {
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmds []tea.Cmd
+
+	// Always update the text input (handles blinking, etc)
+	var cmd tea.Cmd
+	m.searchInput, cmd = m.searchInput.Update(msg)
+	cmds = append(cmds, cmd)
+
 	switch msg := msg.(type) {
 
 	case tea.WindowSizeMsg:
@@ -71,6 +86,22 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.err = msg.err
 
 	case tea.KeyMsg:
+		// type inside search box
+		if m.searchFocus {
+			switch msg.String() {
+			case "esc", "enter":
+				m.searchFocus = false
+				m.searchInput.Blur()
+				return m, tea.Batch(cmds...)
+			}
+
+			res, _ := registry.Search(m.searchInput.Value())
+			m.filtered = res
+			m.cursor = 0
+
+			return m, tea.Batch(cmds...)
+		}
+
 		switch msg.String() {
 		case "q", "ctrl+c":
 			return m, tea.Quit
@@ -88,6 +119,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "2":
 			m.activeTab = tabbundles
 			m.cursor = 0
+
+		case "/":
+			if m.activeTab == tabSkills {
+				m.searchFocus = true
+				m.searchInput.Focus()
+			}
 		}
 
 		// clamp cursor
@@ -100,7 +137,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	return m, nil
+	return m, tea.Batch(cmds...)
 }
 
 func (m Model) listLen() int {
@@ -127,15 +164,23 @@ func (m Model) View() string {
 }
 
 func (m Model) tabBarView() string {
-	s := ""
+	tabs := ""
 	if m.activeTab == tabSkills {
-		s += "[1] Skills   "
-		s += " 2  Bundles"
+		tabs += "[1] Skills   "
+		tabs += " 2  Bundles"
 	} else {
-		s += " 1  Skills   "
-		s += "[2] Bundles"
+		tabs += " 1  Skills   "
+		tabs += "[2] Bundles"
 	}
-	return s
+
+	search := m.searchInput.View()
+
+	padding := m.width - lipgloss.Width(tabs) - lipgloss.Width(search) - 2
+	if padding < 0 {
+		padding = 0
+	}
+
+	return tabs + strings.Repeat(" ", padding) + search
 }
 
 func (m Model) listView() string {

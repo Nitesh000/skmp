@@ -4,6 +4,7 @@ go 1.25.0
 
 require (
 	github.com/RoaringBitmap/roaring/v2 v2.14.5 // indirect
+	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.24.4 // indirect
 	github.com/blevesearch/bleve/v2 v2.6.1 // indirect
