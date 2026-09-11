@@ -1,8 +1,9 @@
 .agents
 
 .env
-scripts/.env
-scripts
+/scripts/.env
+/scripts/*
+/scripts/
 dist
 skmp/*.1
 !skmp/skmp.1
