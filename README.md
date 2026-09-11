@@ -72,6 +72,8 @@ skmp update
 | --------- | ----------------- |
 | `j` / `↓` | move down         |
 | `k` / `↑` | move up           |
+| `K` / `home` | move to top       |
+| `J` / `end`  | move to bottom    |
 | `1`       | Skills tab        |
 | `2`       | Bundles tab       |
 | `3`       | My Skills tab     |

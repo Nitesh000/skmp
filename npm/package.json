@@ -1,6 +1,6 @@
 {
   "name": "skmp-cli",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Skill marketplace for AI agent skills",
   "bin": {
     "skmp": "bin/skmp.js"

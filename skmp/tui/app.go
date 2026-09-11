@@ -32,6 +32,7 @@ type Model struct {
 	filteredBundles []registry.Bundle
 	installed       map[string]bool
 	loading         map[string]bool
+	indexLoaded     bool
 	cursor          int
 	activeTab       tab
 	width           int
@@ -78,7 +79,7 @@ func New(version string) Model {
 }
 
 func (m Model) Init() tea.Cmd {
-	return tea.Batch(textinput.Blink, loadIndex(), loadInstalled())
+	return tea.Batch(textinput.Blink, m.spinner.Tick, loadIndex(), loadInstalled())
 }
 
 func loadIndex() tea.Cmd {
@@ -116,6 +117,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		cmds = append(cmds, c)
 
 	case indexLoadedMsg:
+		m.indexLoaded = true
 		m.skills = msg.idx.Skills
 		m.bundles = msg.idx.Bundles
 		m.filtered = msg.idx.Skills
@@ -185,6 +187,22 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			} else if m.cursor > 0 {
 				m.cursor--
+				m.detailScroll = 0
+			}
+
+		case "K", "home", "pgup":
+			if m.detailFocus {
+				m.detailScroll = 0
+			} else {
+				m.cursor = 0
+				m.detailScroll = 0
+			}
+
+		case "J", "end", "pgdown":
+			if m.detailFocus {
+				m.detailScroll = 999999 // Let clamp/scroll handle max
+			} else {
+				m.cursor = m.listLen() - 1
 				m.detailScroll = 0
 			}
 
@@ -285,7 +303,7 @@ func (m *Model) startAction(install bool, cmds []tea.Cmd) tea.Cmd {
 }
 
 func (m Model) anyLoading() bool {
-	return len(m.loading) > 0
+	return !m.indexLoaded || len(m.loading) > 0
 }
 
 func (m Model) showingBundles() bool {
@@ -368,9 +386,9 @@ func (m Model) View() string {
 		return "loading..."
 	}
 
-	help := "  j/k move · 1-4 tabs · / search · i install · x remove · ? help · q quit"
+	help := "  j/k move · K/J top/bottom · 1-4 tabs · / search · i install · x remove · ? help · q quit"
 	if m.width < minWidth {
-		help = "  j/k move · 1-4 tabs · ? help · q quit"
+		help = "  j/k move · K/J top/bottom · 1-4 tabs · ? help · q quit"
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Left,
@@ -419,7 +437,11 @@ func (m Model) statusBarView() string {
 		m.installedCount(), len(m.skills), len(m.bundles))
 
 	if m.anyLoading() {
-		left += fmt.Sprintf(" · %s %d in progress", m.spinner.View(), len(m.loading))
+		if !m.indexLoaded {
+			left += fmt.Sprintf(" · %s fetching registry", m.spinner.View())
+		} else {
+			left += fmt.Sprintf(" · %s %d in progress", m.spinner.View(), len(m.loading))
+		}
 	}
 
 	right := "skmp v" + m.version + "  "
@@ -444,47 +466,52 @@ func (m Model) installedBundles() []registry.Bundle {
 func (m Model) bodyView() string {
 	tabH := lipgloss.Height(m.tabBarView())
 	statusH := lipgloss.Height(m.statusBarView())
-	helpStr := "  j/k move · 1-4 tabs · / search · i install · x remove · ? help · q quit"
+	helpStr := "  j/k move · K/J top/bottom · 1-4 tabs · / search · i install · x remove · ? help · q quit"
 	if m.width < minWidth {
-		helpStr = "  j/k move · 1-4 tabs · ? help · q quit"
+		helpStr = "  j/k move · K/J top/bottom · 1-4 tabs · ? help · q quit"
 	}
 	helpH := lipgloss.Height(mutedStyle.MaxWidth(m.width).Render(helpStr))
 	outerH := m.height - tabH - statusH - helpH
 	if outerH < 3 {
 		outerH = 3
 	}
-	innerH := outerH - 1
+	innerH := outerH - 2 // account for top and bottom borders
 
 	if m.showHelp {
 		return lipgloss.Place(m.width, outerH, lipgloss.Center, lipgloss.Center, helpView())
 	}
 
+	if !m.indexLoaded {
+		loadingMsg := fmt.Sprintf("%s Fetching registry...", m.spinner.View())
+		return lipgloss.Place(m.width, outerH, lipgloss.Center, lipgloss.Center, mutedStyle.Render(loadingMsg))
+	}
+
 	if m.width < minWidth {
-		return m.paneList(m.width-2, innerH)
+		return m.paneList(m.width-2, outerH, innerH)
 	}
 
 	listW := m.width / 3
 	detailW := m.width - listW - 4 // 2 borders per pane
 
 	return lipgloss.JoinHorizontal(lipgloss.Top,
-		m.paneList(listW, innerH),
-		m.paneDetail(detailW, innerH),
+		m.paneList(listW, outerH, innerH),
+		m.paneDetail(detailW, outerH, innerH),
 	)
 }
 
-func (m Model) paneList(w, h int) string {
-	content := m.listView(w, h)
-	return m.paneStyle(!m.detailFocus).Width(w).Height(h).MaxHeight(h).Render(content)
+func (m Model) paneList(w, outerH, innerH int) string {
+	content := m.listView(w, innerH)
+	return m.paneStyle(!m.detailFocus).Width(w).Height(innerH).Render(content)
 }
 
-func (m Model) paneDetail(w, h int) string {
+func (m Model) paneDetail(w, outerH, innerH int) string {
 	var content string
 	if m.showingBundles() {
 		content = m.bundleDetailsView(w)
 	} else {
 		content = m.skillDetailView(w)
 	}
-	return m.paneStyle(m.detailFocus).Width(w).Height(h).MaxHeight(h).Render(scroll(content, m.detailScroll, h))
+	return m.paneStyle(m.detailFocus).Width(w).Height(innerH).Render(scroll(content, m.detailScroll, innerH))
 }
 
 func (m Model) paneStyle(focused bool) lipgloss.Style {
@@ -538,7 +565,7 @@ func (m Model) skillsListView(w, h int) string {
 	for i := offset; i < end; i++ {
 		s.WriteString(m.row(i, m.skillBadge(skills[i].Name), skills[i].Name, "", w))
 	}
-	return s.String()
+	return strings.TrimRight(s.String(), "\n")
 }
 
 func (m Model) bundlesListView(w, h int) string {
@@ -556,7 +583,7 @@ func (m Model) bundlesListView(w, h int) string {
 		count := fmt.Sprintf(" (%d/%d)", m.installedIn(bundles[i]), len(bundles[i].Skills))
 		s.WriteString(m.row(i, m.bundleBadge(bundles[i]), bundles[i].Name, count, w))
 	}
-	return s.String()
+	return strings.TrimRight(s.String(), "\n")
 }
 
 func (m Model) row(i int, badge, name, suffix string, w int) string {
