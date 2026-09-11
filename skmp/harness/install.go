@@ -1,6 +1,7 @@
 package harness
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -77,6 +78,12 @@ func Install(name, sourceURL string) error {
 		return fmt.Errorf("no files downloaded from %s", sourceURL)
 	}
 
+	for _, h := range InstalledHarnesses() {
+		if h.Name == "opencode" {
+			registerOpenCode()
+		}
+	}
+
 	// link into harness dir
 	if runtime.GOOS == "windows" {
 		return copyToHarnessDirs(name, storeDir)
@@ -87,54 +94,49 @@ func Install(name, sourceURL string) error {
 
 // remove skill
 func Remove(name string) error {
-	seen := map[string]bool{}
-
-	for _, h := range InstalledHarnesses() {
-		if seen[h.SkillsDir] {
-			continue
-		}
-		seen[h.SkillsDir] = true
-		os.RemoveAll(filepath.Join(h.SkillsDir, name))
+	for _, dir := range linkTargets() {
+		os.RemoveAll(filepath.Join(dir, name))
 	}
 
 	// remove from local store
 	return os.RemoveAll(filepath.Join(StoreDir(), name))
 }
 
-// generating symlinks
-func symlinkToHarnessDirs(name, storeDir string) error {
+// linkTargets returns every directory that needs a link, deduplicated.
+// Config-based harnesses are excluded — they read from the store directly.
+func linkTargets() []string {
 	seen := map[string]bool{}
-
+	var dirs []string
 	for _, h := range InstalledHarnesses() {
-		if seen[h.SkillsDir] {
+		if h.ConfigBased || seen[h.SkillsDir] {
 			continue
 		}
 		seen[h.SkillsDir] = true
+		dirs = append(dirs, h.SkillsDir)
+	}
+	return dirs
+}
 
-		os.MkdirAll(h.SkillsDir, 0755)
-		link := filepath.Join(h.SkillsDir, name)
+// generating symlinks
+func symlinkToHarnessDirs(name, storeDir string) error {
+	for _, dir := range linkTargets() {
+		os.MkdirAll(dir, 0755)
+		link := filepath.Join(dir, name)
 		if err := os.Symlink(storeDir, link); err != nil && !os.IsExist(err) {
-			return fmt.Errorf("symlink %s: %w", h.Name, err)
+			return fmt.Errorf("symlink %s: %w", dir, err)
 		}
 	}
-
 	return nil
 }
 
 func copyToHarnessDirs(name, storeDir string) error {
-	seen := map[string]bool{}
-
-	for _, h := range InstalledHarnesses() {
-		if seen[h.SkillsDir] {
-			continue
-		}
-		seen[h.SkillsDir] = true
-		dest := filepath.Join(h.SkillsDir, name)
+	for _, dir := range linkTargets() {
+		os.MkdirAll(dir, 0755)
+		dest := filepath.Join(dir, name)
 		if err := copyDir(storeDir, dest); err != nil {
-			return fmt.Errorf("copy to %s: %w", h.Name, err)
+			return fmt.Errorf("copy to %s: %w", dir, err)
 		}
 	}
-
 	return nil
 }
 
@@ -186,18 +188,56 @@ func Uninstall() error {
 
 	seen := map[string]bool{}
 	for _, h := range Detect() {
-		if seen[h.SkillsDir] {
+		if h.ConfigBased || seen[h.SkillsDir] {
 			continue
 		}
 		seen[h.SkillsDir] = true
 		for _, e := range entries {
-			link := filepath.Join(h.SkillsDir, e.Name())
-			os.Remove(link)
+			os.Remove(filepath.Join(h.SkillsDir, e.Name()))
 		}
 	}
 
 	// delete ~/.skmp entirely
 	return os.RemoveAll(filepath.Join(home, ".skmp"))
+}
+
+// registerOpenCode adds the skmp store to opencode's skills.paths config.
+// OpenCode reads skills from paths listed in its config rather than a fixed dir.
+func registerOpenCode() error {
+	home, _ := os.UserHomeDir()
+	cfgPath := filepath.Join(home, ".config", "opencode", "opencode.jsonc")
+
+	data, err := os.ReadFile(cfgPath)
+	if err != nil {
+		return err
+	}
+
+	var cfg map[string]any
+	if err := json.Unmarshal(data, &cfg); err != nil {
+		return err
+	}
+
+	store := StoreDir()
+	skills, _ := cfg["skills"].(map[string]any)
+	if skills == nil {
+		skills = map[string]any{}
+	}
+
+	paths, _ := skills["paths"].([]any)
+	for _, p := range paths {
+		if s, ok := p.(string); ok && s == store {
+			return nil // already registered
+		}
+	}
+
+	skills["paths"] = append(paths, store)
+	cfg["skills"] = skills
+
+	out, err := json.MarshalIndent(cfg, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(cfgPath, out, 0644)
 }
 
 func Sync() (int, error) {
@@ -212,16 +252,13 @@ func Sync() (int, error) {
 		return 0, err
 	}
 
-	// deduplicate harness sill dirs
-	seen := map[string]bool{}
-	var uniqueDirs []string
 	for _, h := range InstalledHarnesses() {
-		if !seen[h.SkillsDir] {
-			seen[h.SkillsDir] = true
-			uniqueDirs = append(uniqueDirs, h.SkillsDir)
+		if h.Name == "opencode" {
+			registerOpenCode()
 		}
 	}
 
+	uniqueDirs := linkTargets()
 	linked := 0
 	for _, e := range entries {
 		if !e.IsDir() {

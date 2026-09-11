@@ -2,7 +2,7 @@
 
 A full-screen TUI package manager for AI agent skills.
 
-Install, search, and manage skills across all major agentic tools — pi, Claude Code, OpenCode, Codex, and Antigravity — from one place.
+Install, search, and manage skills across all major agentic tools — pi, Claude Code, Codex, Cursor, and OpenCode — from one place.
 
 ```
 ┌─ skmp ──────────────────────────────────────────────────────────┐
@@ -86,15 +86,20 @@ skmp sync
 
 ## Supported Harnesses
 
-| Harness                                  | Skills path         |
-| ---------------------------------------- | ------------------- |
-| [pi](https://github.com/pi-cli/pi)       | `~/.agents/skills/` |
-| [Claude Code](https://claude.ai/code)    | `~/.agents/skills/` |
-| [OpenCode](https://opencode.ai)          | `~/.agents/skills/` |
-| [Antigravity](https://antigravity.dev)   | `~/.agents/skills/` |
-| [Codex](https://github.com/openai/codex) | `~/.codex/skills/`  |
+| Harness                                  | Skills path                   | Mechanism |
+| ---------------------------------------- | ----------------------------- | --------- |
+| [pi](https://github.com/pi-cli/pi)       | `~/.agents/skills/`           | symlink   |
+| [Claude Code](https://claude.ai/code)    | `~/.agents/skills/`           | symlink   |
+| [Codex](https://github.com/openai/codex) | `~/.codex/skills/`            | symlink   |
+| [Cursor](https://cursor.com)             | `~/.cursor/skills-cursor/`    | symlink   |
+| [OpenCode](https://opencode.ai)          | registered in `opencode.jsonc`| config    |
 
 Skills are installed once to `~/.skmp/skills/` and symlinked into each harness automatically.
+
+OpenCode is the exception — it reads skills from paths listed in its own config rather than a
+fixed directory, so skmp registers `~/.skmp/skills` under `skills.paths` in
+`~/.config/opencode/opencode.jsonc` instead of symlinking.
+
 Run `skmp sync` after installing a new harness to link existing skills into it.
 
 ## Registry
@@ -143,10 +148,12 @@ Optional files: `REFERENCE.md`, `EXAMPLES.md`
 ## How It Works
 
 ```
-registry/index.json   — metadata + source URLs (hosted here, served via CDN)
-~/.skmp/skills/       — downloaded skill files (skmp owns this)
-~/.agents/skills/     — symlinks → ~/.skmp/skills/ (read by most harnesses)
-~/.codex/skills/      — symlinks → ~/.skmp/skills/ (read by Codex)
+registry/index.json      — metadata + source URLs (hosted here, served via CDN)
+~/.skmp/skills/          — downloaded skill files (skmp owns this)
+~/.agents/skills/        — symlinks → ~/.skmp/skills/ (pi, Claude Code)
+~/.codex/skills/         — symlinks → ~/.skmp/skills/ (Codex)
+~/.cursor/skills-cursor/ — symlinks → ~/.skmp/skills/ (Cursor)
+opencode.jsonc           — skills.paths entry → ~/.skmp/skills/ (OpenCode)
 ```
 
 ## Contributing

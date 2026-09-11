@@ -10,6 +10,9 @@ type Harness struct {
 	Name      string
 	SkillsDir string
 	Installed bool
+	// ConfigBased harnesses read skills from a path registered in their own
+	// config file instead of scanning a well-known directory.
+	ConfigBased bool
 }
 
 func Detect() []Harness {
@@ -28,14 +31,10 @@ func Detect() []Harness {
 			Installed: commandExists("claude"),
 		},
 		{
-			Name:      "opencode",
-			SkillsDir: agentsSkills,
-			Installed: commandExists("opencode"),
-		},
-		{
-			Name:      "antigravity",
-			SkillsDir: agentsSkills,
-			Installed: dirExist(filepath.Join(home, ".antigravity-ide")),
+			Name:        "opencode",
+			SkillsDir:   StoreDir(),
+			Installed:   commandExists("opencode"),
+			ConfigBased: true,
 		},
 		{
 			Name:      "codex",
@@ -44,7 +43,7 @@ func Detect() []Harness {
 		},
 		{
 			Name:      "cursor",
-			SkillsDir: agentsSkills,
+			SkillsDir: filepath.Join(home, ".cursor", "skills-cursor"),
 			Installed: dirExist(filepath.Join(home, ".cursor")),
 		},
 	}

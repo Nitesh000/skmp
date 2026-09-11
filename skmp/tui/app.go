@@ -6,6 +6,7 @@ import (
 
 	"github.com/Nitesh000/skmp/harness"
 	"github.com/Nitesh000/skmp/registry"
+	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -15,10 +16,16 @@ type tab int
 
 const (
 	tabSkills tab = iota
-	tabbundles
+	tabBundles
+	tabMySkills
+	tabMyBundles
 )
 
+// minWidth is the point below which the split pane is dropped for a single list.
+const minWidth = 60
+
 type Model struct {
+	version         string
 	skills          []registry.Skill
 	bundles         []registry.Bundle
 	filtered        []registry.Skill
@@ -32,6 +39,11 @@ type Model struct {
 	err             error
 	searchInput     textinput.Model
 	searchFocus     bool
+	spinner         spinner.Model
+	spinning        bool
+	showHelp        bool
+	detailFocus     bool
+	detailScroll    int
 }
 
 // messages
@@ -46,15 +58,22 @@ type (
 	}
 )
 
-func New() Model {
+func New(version string) Model {
 	ti := textinput.New()
 	ti.Placeholder = "search..."
 	ti.Width = 30
 
+	sp := spinner.New(
+		spinner.WithSpinner(spinner.MiniDot),
+		spinner.WithStyle(lipgloss.NewStyle().Foreground(highlight)),
+	)
+
 	return Model{
+		version:     version,
 		installed:   map[string]bool{},
 		loading:     map[string]bool{},
 		searchInput: ti,
+		spinner:     sp,
 	}
 }
 
@@ -86,6 +105,16 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = msg.Width
 		m.height = msg.Height
 
+	case spinner.TickMsg:
+		// Let the animation die out once nothing is in flight.
+		if !m.anyLoading() {
+			m.spinning = false
+			break
+		}
+		var c tea.Cmd
+		m.spinner, c = m.spinner.Update(msg)
+		cmds = append(cmds, c)
+
 	case indexLoadedMsg:
 		m.skills = msg.idx.Skills
 		m.bundles = msg.idx.Bundles
@@ -102,12 +131,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case actionCompleteMsg:
-		m.loading[msg.name] = false
+		delete(m.loading, msg.name)
 		if msg.err == nil {
 			m.installed[msg.name] = msg.isInstall
 		} else {
 			m.err = msg.err
 		}
+		m.clampCursor()
 
 	case tea.KeyMsg:
 		// type inside search box
@@ -124,7 +154,18 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.filtered = resSkills
 			m.filteredBundles = resBundles
 			m.cursor = 0
+			m.detailScroll = 0
 
+			return m, tea.Batch(cmds...)
+		}
+
+		if m.showHelp {
+			switch msg.String() {
+			case "q", "ctrl+c":
+				return m, tea.Quit
+			case "?", "esc":
+				m.showHelp = false
+			}
 			return m, tea.Batch(cmds...)
 		}
 
@@ -133,84 +174,192 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 
 		case "j", "down":
-			m.cursor++
-		case "k", "up":
-			if m.cursor > 0 {
-				m.cursor--
+			if m.detailFocus {
+				m.detailScroll++
+			} else {
+				m.cursor++
+				m.detailScroll = 0
 			}
-		case "1":
-			m.activeTab = tabSkills
-			m.cursor = 0
+		case "k", "up":
+			if m.detailFocus {
+				if m.detailScroll > 0 {
+					m.detailScroll--
+				}
+			} else if m.cursor > 0 {
+				m.cursor--
+				m.detailScroll = 0
+			}
 
+		case "1":
+			m.switchTab(tabSkills)
 		case "2":
-			m.activeTab = tabbundles
-			m.cursor = 0
+			m.switchTab(tabBundles)
+		case "3":
+			m.switchTab(tabMySkills)
+		case "4":
+			m.switchTab(tabMyBundles)
+
+		case "tab":
+			m.detailFocus = !m.detailFocus
+
+		case "?":
+			m.showHelp = true
 
 		case "/":
 			m.searchFocus = true
 			m.searchInput.Focus()
 
 		case "i":
-			var batch []tea.Cmd
-			if m.activeTab == tabSkills && len(m.filtered) > 0 {
-				s := m.filtered[m.cursor]
-				if !m.installed[s.Name] && !m.loading[s.Name] {
-					m.loading[s.Name] = true
-					batch = append(batch, doInstall(s.Name, s.Source))
-				}
-			} else if m.activeTab == tabbundles && len(m.filteredBundles) > 0 {
-				b := m.filteredBundles[m.cursor]
-				for _, skillName := range b.Skills {
-					if !m.installed[skillName] && !m.loading[skillName] {
-						m.loading[skillName] = true
-						source := registry.BundleSkillSource(&registry.BundleFile{
-							Repo: b.Repo, Branch: b.Branch, SkillsPath: b.SkillsPath,
-						}, skillName)
-						batch = append(batch, doInstall(skillName, source))
-					}
-				}
-			}
-			return m, tea.Batch(batch...)
+			return m, m.startAction(true, cmds)
 
 		case "x":
-			var batch []tea.Cmd
-			if m.activeTab == tabSkills && len(m.filtered) > 0 {
-				s := m.filtered[m.cursor]
-				if m.installed[s.Name] && !m.loading[s.Name] {
-					m.loading[s.Name] = true
-					batch = append(batch, doRemove(s.Name))
-				}
-			} else if m.activeTab == tabbundles && len(m.filteredBundles) > 0 {
-				b := m.filteredBundles[m.cursor]
-				for _, skillName := range b.Skills {
-					if m.installed[skillName] && !m.loading[skillName] {
-						m.loading[skillName] = true
-						batch = append(batch, doRemove(skillName))
-					}
-				}
-			}
-			return m, tea.Batch(batch...)
+			return m, m.startAction(false, cmds)
 		}
 
-		// clamp cursor
-		max := m.listLen() - 1
-		if m.cursor > max {
-			m.cursor = max
-		}
-		if m.cursor < 0 {
-			m.cursor = 0
-		}
+		m.clampCursor()
 	}
 
 	return m, tea.Batch(cmds...)
 }
 
-func (m Model) listLen() int {
-	if m.activeTab == tabbundles {
-		return len(m.filteredBundles)
+func (m *Model) switchTab(t tab) {
+	m.activeTab = t
+	m.cursor = 0
+	m.detailScroll = 0
+}
+
+func (m *Model) clampCursor() {
+	if max := m.listLen() - 1; m.cursor > max {
+		m.cursor = max
+	}
+	if m.cursor < 0 {
+		m.cursor = 0
+	}
+}
+
+// startAction queues installs or removals for the current selection. A bundle
+// selection fans out to every skill it contains.
+func (m *Model) startAction(install bool, cmds []tea.Cmd) tea.Cmd {
+	var names []string
+	var sources []string
+
+	if m.showingBundles() {
+		bundles := m.visibleBundles()
+		if len(bundles) == 0 || m.cursor >= len(bundles) {
+			return tea.Batch(cmds...)
+		}
+		b := bundles[m.cursor]
+		for _, name := range b.Skills {
+			names = append(names, name)
+			sources = append(sources, registry.BundleSkillSource(&registry.BundleFile{
+				Repo: b.Repo, Branch: b.Branch, SkillsPath: b.SkillsPath,
+			}, name))
+		}
+	} else {
+		skills := m.visibleSkills()
+		if len(skills) == 0 || m.cursor >= len(skills) {
+			return tea.Batch(cmds...)
+		}
+		names = append(names, skills[m.cursor].Name)
+		sources = append(sources, skills[m.cursor].Source)
 	}
 
-	return len(m.filtered)
+	started := false
+	for i, name := range names {
+		if m.installed[name] == install || m.loading[name] {
+			continue
+		}
+		m.loading[name] = true
+		started = true
+		if install {
+			cmds = append(cmds, doInstall(name, sources[i]))
+		} else {
+			cmds = append(cmds, doRemove(name))
+		}
+	}
+
+	if started && !m.spinning {
+		m.spinning = true
+		cmds = append(cmds, m.spinner.Tick)
+	}
+
+	return tea.Batch(cmds...)
+}
+
+func (m Model) anyLoading() bool {
+	return len(m.loading) > 0
+}
+
+func (m Model) showingBundles() bool {
+	return m.activeTab == tabBundles || m.activeTab == tabMyBundles
+}
+
+// visibleSkills is the search-filtered list, narrowed to installed skills on
+// the "My Skills" tab.
+func (m Model) visibleSkills() []registry.Skill {
+	if m.activeTab != tabMySkills {
+		return m.filtered
+	}
+	var out []registry.Skill
+	for _, s := range m.filtered {
+		if m.installed[s.Name] {
+			out = append(out, s)
+		}
+	}
+	return out
+}
+
+// visibleBundles narrows to bundles with at least one installed skill on the
+// "My Bundles" tab, so partial installs stay visible.
+func (m Model) visibleBundles() []registry.Bundle {
+	if m.activeTab != tabMyBundles {
+		return m.filteredBundles
+	}
+	var out []registry.Bundle
+	for _, b := range m.filteredBundles {
+		if m.installedIn(b) > 0 {
+			out = append(out, b)
+		}
+	}
+	return out
+}
+
+func (m Model) installedIn(b registry.Bundle) int {
+	n := 0
+	for _, name := range b.Skills {
+		if m.installed[name] {
+			n++
+		}
+	}
+	return n
+}
+
+func (m Model) loadingIn(b registry.Bundle) bool {
+	for _, name := range b.Skills {
+		if m.loading[name] {
+			return true
+		}
+	}
+	return false
+}
+
+func (m Model) listLen() int {
+	if m.showingBundles() {
+		return len(m.visibleBundles())
+	}
+	return len(m.visibleSkills())
+}
+
+// installedCount counts registry skills only, so it matches what the
+// "My Skills" tab can actually list.
+func (m Model) installedCount() int {
+	n := 0
+	for _, s := range m.skills {
+		if m.installed[s.Name] {
+			n++
+		}
+	}
+	return n
 }
 
 func (m Model) View() string {
@@ -221,106 +370,221 @@ func (m Model) View() string {
 		return "loading..."
 	}
 
-	tabBar := m.tabBarView()
-	body := m.bodyView()
-	help := mutedStyle.Render("  j/k move · 1/2 tabs · q quit")
+	help := "  j/k move · 1-4 tabs · / search · i install · x remove · ? help · q quit"
+	if m.width < minWidth {
+		help = "  j/k move · 1-4 tabs · ? help · q quit"
+	}
 
-	return lipgloss.JoinVertical(lipgloss.Left, tabBar, body, help)
+	return lipgloss.JoinVertical(lipgloss.Left,
+		m.tabBarView(),
+		m.bodyView(),
+		m.statusBarView(),
+		mutedStyle.MaxWidth(m.width).Render(help),
+	)
 }
 
 func (m Model) tabBarView() string {
-	tabs := ""
-	if m.activeTab == tabSkills {
-		tabs += "[1] Skills   "
-		tabs += " 2  Bundles"
-	} else {
-		tabs += " 1  Skills   "
-		tabs += "[2] Bundles"
+	labels := []string{
+		"Skills",
+		"Bundles",
+		fmt.Sprintf("My Skills (%d)", m.installedCount()),
+		fmt.Sprintf("My Bundles (%d)", len(m.installedBundles())),
 	}
 
-	search := m.searchInput.View()
+	var parts []string
+	for i, label := range labels {
+		if tab(i) == m.activeTab {
+			parts = append(parts, activeTabStyle.Render(fmt.Sprintf(" %d %s ", i+1, label)))
+			continue
+		}
+		// Narrow terminals only get room for the inactive tab numbers.
+		if m.width < minWidth {
+			parts = append(parts, inactiveTabStyle.Render(fmt.Sprintf(" %d ", i+1)))
+		} else {
+			parts = append(parts, inactiveTabStyle.Render(fmt.Sprintf(" %d %s ", i+1, label)))
+		}
+	}
+	tabs := strings.Join(parts, " ")
 
+	search := m.searchInput.View()
 	padding := m.width - lipgloss.Width(tabs) - lipgloss.Width(search) - 2
-	if padding < 0 {
-		padding = 0
+	if padding < 1 {
+		// No room for both — the tabs matter more.
+		return lipgloss.NewStyle().MaxWidth(m.width).Render(tabs)
 	}
 
 	return tabs + strings.Repeat(" ", padding) + search
 }
 
-func (m Model) listView() string {
-	if m.activeTab == tabSkills {
-		return m.skillsListView()
+func (m Model) statusBarView() string {
+	left := fmt.Sprintf("  %d installed · %d skills · %d bundles",
+		m.installedCount(), len(m.skills), len(m.bundles))
+
+	if m.anyLoading() {
+		left += fmt.Sprintf(" · %s %d in progress", m.spinner.View(), len(m.loading))
 	}
-	return m.bundlesListView()
+
+	right := "skmp v" + m.version + "  "
+	padding := m.width - lipgloss.Width(left) - lipgloss.Width(right)
+	if padding < 1 {
+		return mutedStyle.MaxWidth(m.width).Render(left)
+	}
+
+	return mutedStyle.Render(left) + strings.Repeat(" ", padding) + mutedStyle.Render(right)
 }
 
-func (m Model) skillsListView() string {
-	if len(m.filtered) == 0 {
-		return "  no skills found"
-	}
-	var s strings.Builder
-	for i, skill := range m.filtered {
-		prefix := "  "
-		if i == m.cursor {
-			prefix = "▶ "
+func (m Model) installedBundles() []registry.Bundle {
+	var out []registry.Bundle
+	for _, b := range m.bundles {
+		if m.installedIn(b) > 0 {
+			out = append(out, b)
 		}
-		fmt.Fprintf(&s, "%s%s\n", prefix, skill.Name)
 	}
-	return s.String()
-}
-
-func (m Model) bundlesListView() string {
-	if len(m.filteredBundles) == 0 {
-		return "  no bundles found"
-	}
-	var s strings.Builder
-	for i, bun := range m.filteredBundles {
-		prefix := "  "
-		if i == m.cursor {
-			prefix = "▶ "
-		}
-		fmt.Fprintf(&s, "%s%s (%d skills)\n", prefix, bun.Name, len(bun.Skills))
-	}
-	return s.String()
+	return out
 }
 
 func (m Model) bodyView() string {
+	outerH := m.height - 3
+	if outerH < 3 {
+		outerH = 3
+	}
+	innerH := outerH - 2
+
+	if m.showHelp {
+		return lipgloss.Place(m.width, outerH, lipgloss.Center, lipgloss.Center, helpView())
+	}
+
+	if m.width < minWidth {
+		return m.paneList(m.width-2, innerH)
+	}
+
 	listW := m.width / 3
-	detailW := m.width - listW - 3 // 3 = borders + gap
-	innerH := m.height - 4
+	detailW := m.width - listW - 4 // 2 borders per pane
 
-	list := m.paneList(listW, innerH)
-	detail := m.paneDetail(detailW, innerH)
-
-	return lipgloss.JoinHorizontal(lipgloss.Top, list, detail)
+	return lipgloss.JoinHorizontal(lipgloss.Top,
+		m.paneList(listW, innerH),
+		m.paneDetail(detailW, innerH),
+	)
 }
 
 func (m Model) paneList(w, h int) string {
-	content := m.listView()
-
-	style := borderStyle.Width(w).Height(h)
-	return style.Render(content)
+	return m.paneStyle(!m.detailFocus).Width(w).Height(h).Render(m.listView(w))
 }
 
 func (m Model) paneDetail(w, h int) string {
 	var content string
-	if m.activeTab == tabSkills {
-		content = m.skillDetailView(w)
-	} else {
+	if m.showingBundles() {
 		content = m.bundleDetailsView(w)
+	} else {
+		content = m.skillDetailView(w)
+	}
+	return m.paneStyle(m.detailFocus).Width(w).Height(h).Render(scroll(content, m.detailScroll, h))
+}
+
+func (m Model) paneStyle(focused bool) lipgloss.Style {
+	if focused {
+		return activeBorderStyle
+	}
+	return borderStyle
+}
+
+// scroll drops the first offset lines, keeping at least one screen of content.
+func scroll(content string, offset, height int) string {
+	lines := strings.Split(content, "\n")
+	if max := len(lines) - height; offset > max {
+		offset = max
+	}
+	if offset < 1 {
+		return content
+	}
+	return strings.Join(lines[offset:], "\n")
+}
+
+func (m Model) listView(w int) string {
+	if m.showingBundles() {
+		return m.bundlesListView(w)
+	}
+	return m.skillsListView(w)
+}
+
+func (m Model) skillsListView(w int) string {
+	skills := m.visibleSkills()
+	if len(skills) == 0 {
+		if m.activeTab == tabMySkills {
+			return mutedStyle.Render("  no skills installed")
+		}
+		return mutedStyle.Render("  no skills found")
 	}
 
-	style := borderStyle.Width(w).Height(h)
-	return style.Render(content)
+	var s strings.Builder
+	for i, skill := range skills {
+		s.WriteString(m.row(i, m.skillBadge(skill.Name), skill.Name, "", w))
+	}
+	return s.String()
+}
+
+func (m Model) bundlesListView(w int) string {
+	bundles := m.visibleBundles()
+	if len(bundles) == 0 {
+		if m.activeTab == tabMyBundles {
+			return mutedStyle.Render("  no bundles installed")
+		}
+		return mutedStyle.Render("  no bundles found")
+	}
+
+	var s strings.Builder
+	for i, b := range bundles {
+		count := fmt.Sprintf(" (%d/%d)", m.installedIn(b), len(b.Skills))
+		s.WriteString(m.row(i, m.bundleBadge(b), b.Name, count, w))
+	}
+	return s.String()
+}
+
+func (m Model) row(i int, badge, name, suffix string, w int) string {
+	cursor := "  "
+	label := normalStyle.Render(name)
+	if i == m.cursor {
+		cursor = "▶ "
+		label = selectedStyle.Render(name)
+	}
+	line := cursor + badge + label + mutedStyle.Render(suffix)
+	return lipgloss.NewStyle().MaxWidth(w).Render(line) + "\n"
+}
+
+// skillBadge shows install state in the list: spinner while working, filled
+// dot when installed, hollow dot otherwise.
+func (m Model) skillBadge(name string) string {
+	switch {
+	case m.loading[name]:
+		return m.spinner.View() + " "
+	case m.installed[name]:
+		return installedStyle.Render("● ")
+	default:
+		return mutedStyle.Render("○ ")
+	}
+}
+
+func (m Model) bundleBadge(b registry.Bundle) string {
+	installed := m.installedIn(b)
+	switch {
+	case m.loadingIn(b):
+		return m.spinner.View() + " "
+	case len(b.Skills) > 0 && installed == len(b.Skills):
+		return installedStyle.Render("● ")
+	case installed > 0:
+		return partialStyle.Render("◐ ")
+	default:
+		return mutedStyle.Render("○ ")
+	}
 }
 
 func (m Model) skillDetailView(w int) string {
-	if len(m.filtered) == 0 || m.cursor >= len(m.filtered) {
+	skills := m.visibleSkills()
+	if len(skills) == 0 || m.cursor >= len(skills) {
 		return mutedStyle.Render("select a skill")
 	}
 
-	s := m.filtered[m.cursor]
+	s := skills[m.cursor]
 
 	tags := ""
 	for _, t := range s.Tags {
@@ -328,11 +592,12 @@ func (m Model) skillDetailView(w int) string {
 	}
 
 	var status string
-	if m.loading[s.Name] {
-		status = mutedStyle.Render("⏳ working...")
-	} else if m.installed[s.Name] {
+	switch {
+	case m.loading[s.Name]:
+		status = m.spinner.View() + mutedStyle.Render(" working...")
+	case m.installed[s.Name]:
 		status = installedStyle.Render("● installed")
-	} else {
+	default:
 		status = mutedStyle.Render("○ not installed")
 	}
 
@@ -348,41 +613,28 @@ func (m Model) skillDetailView(w int) string {
 }
 
 func (m Model) bundleDetailsView(w int) string {
-	if len(m.filteredBundles) == 0 || m.cursor >= len(m.filteredBundles) {
+	bundles := m.visibleBundles()
+	if len(bundles) == 0 || m.cursor >= len(bundles) {
 		return mutedStyle.Render("select a bundle")
 	}
 
-	b := m.filteredBundles[m.cursor]
-
-	// count installed skills in bundle
-	installedCount := 0
-	for _, name := range b.Skills {
-		if m.installed[name] {
-			installedCount++
-		}
-	}
-
+	b := bundles[m.cursor]
+	installedCount := m.installedIn(b)
 	total := len(b.Skills)
 
 	var status string
 	switch {
-	case installedCount == total:
+	case total > 0 && installedCount == total:
 		status = installedStyle.Render("● installed")
 	case installedCount > 0:
-		status = installedStyle.Render(fmt.Sprintf("◐ partial (%d/%d)", installedCount, total))
+		status = partialStyle.Render(fmt.Sprintf("◐ partial (%d/%d)", installedCount, total))
 	default:
 		status = mutedStyle.Render("○ not installed")
 	}
 
 	skillList := ""
 	for _, name := range b.Skills {
-		badge := "  "
-		if m.loading[name] {
-			badge = mutedStyle.Render("⏳ ")
-		} else if m.installed[name] {
-			badge = installedStyle.Render("✓ ")
-		}
-		skillList += badge + name + "\n"
+		skillList += m.skillBadge(name) + name + "\n"
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Left,
@@ -391,12 +643,38 @@ func (m Model) bundleDetailsView(w int) string {
 		wrapText(b.Description, w-4),
 		"",
 		labelStyle.Render("Author")+valueStyle.Render(b.Author),
+		labelStyle.Render("Repo")+valueStyle.Render(b.Repo),
 		labelStyle.Render("Skills")+valueStyle.Render(fmt.Sprintf("%d", total)),
 		"",
 		status,
 		"",
 		skillList,
 	)
+}
+
+func helpView() string {
+	bindings := [][2]string{
+		{"j / ↓", "move down"},
+		{"k / ↑", "move up"},
+		{"1", "all skills"},
+		{"2", "all bundles"},
+		{"3", "installed skills"},
+		{"4", "installed bundles"},
+		{"tab", "switch list / detail focus"},
+		{"/", "search (esc to leave)"},
+		{"i", "install selection"},
+		{"x", "remove selection"},
+		{"?", "close this help"},
+		{"q", "quit"},
+	}
+
+	var rows []string
+	rows = append(rows, titleStyle.Render("Keybindings"), "")
+	for _, b := range bindings {
+		rows = append(rows, labelStyle.Render(b[0])+valueStyle.Render(b[1]))
+	}
+
+	return activeBorderStyle.Padding(1, 3).Render(lipgloss.JoinVertical(lipgloss.Left, rows...))
 }
 
 func wrapText(text string, width int) string {

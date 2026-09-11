@@ -7,6 +7,7 @@ var (
 	highlight = lipgloss.AdaptiveColor{Light: "#874BFD", Dark: "#7D56F4"}
 	muted     = lipgloss.AdaptiveColor{Light: "#888888", Dark: "#626262"}
 	special   = lipgloss.AdaptiveColor{Light: "#43BF6D", Dark: "#73F59F"}
+	warn      = lipgloss.AdaptiveColor{Light: "#B8860B", Dark: "#E6C07B"}
 
 	borderStyle = lipgloss.NewStyle().
 			Border(lipgloss.NormalBorder()).
@@ -46,4 +47,16 @@ var (
 	installedStyle = lipgloss.NewStyle().
 			Foreground(special).
 			Bold(true)
+
+	partialStyle = lipgloss.NewStyle().
+			Foreground(warn).
+			Bold(true)
+
+	activeTabStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("#FFFFFF")).
+			Background(highlight).
+			Bold(true)
+
+	inactiveTabStyle = lipgloss.NewStyle().
+				Foreground(muted)
 )
