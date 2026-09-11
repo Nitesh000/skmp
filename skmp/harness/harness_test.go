@@ -197,9 +197,11 @@ func TestSymlinkReplacesStaleLink(t *testing.T) {
 
 	origStore := StoreDir
 	origSkills := SkillsDir
+	origLinkTargets := linkTargets
 	StoreDir = func() string { return store }
 	SkillsDir = func() string { return agents }
-	defer func() { StoreDir = origStore; SkillsDir = origSkills }()
+	linkTargets = func() []string { return []string{agents} }
+	defer func() { StoreDir = origStore; SkillsDir = origSkills; linkTargets = origLinkTargets }()
 
 	storeEntry := writeSkill(t, store, "skill-a")
 
@@ -229,9 +231,11 @@ func TestSymlinkPreservesRealDir(t *testing.T) {
 
 	origStore := StoreDir
 	origSkills := SkillsDir
+	origLinkTargets := linkTargets
 	StoreDir = func() string { return store }
 	SkillsDir = func() string { return agents }
-	defer func() { StoreDir = origStore; SkillsDir = origSkills }()
+	linkTargets = func() []string { return []string{agents} }
+	defer func() { StoreDir = origStore; SkillsDir = origSkills; linkTargets = origLinkTargets }()
 
 	storeEntry := writeSkill(t, store, "skill-a")
 	writeSkill(t, agents, "skill-a") // real user dir

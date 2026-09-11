@@ -89,7 +89,8 @@ func Remove(name string) error {
 
 // linkTargets returns deduplicated dirs for currently-installed harnesses,
 // excluding ConfigBased ones (they read the store directly).
-func linkTargets() []string {
+// Defined as a var so tests can override it without needing real harnesses.
+var linkTargets = func() []string {
 	return collectTargets(InstalledHarnesses())
 }
 
