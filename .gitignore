@@ -3,3 +3,6 @@
 .env
 scripts/.env
 scripts
+dist
+skmp/*.1
+!skmp/skmp.1

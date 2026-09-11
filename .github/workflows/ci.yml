@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'skmp/go.mod'
+          cache-dependency-path: 'skmp/go.sum'
+
+      - name: Go Build
+        working-directory: ./skmp
+        run: go build ./...
+
+      - name: Go Vet
+        working-directory: ./skmp
+        run: go vet ./...
+
+      - name: Go Test
+        working-directory: ./skmp
+        run: go test ./...

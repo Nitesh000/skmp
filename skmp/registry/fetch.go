@@ -8,12 +8,19 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/Nitesh000/skmp/config"
 )
 
-const (
-	indexURL = "https://cdn.jsdelivr.net/gh/nitesh000/skmp@master/registry/index.json"
-	cacheTTL = 24 * time.Hour
-)
+const cacheTTL = 24 * time.Hour
+
+func indexURL() string {
+	tag := "v" + config.Version
+	if config.Version == "dev" {
+		tag = "master"
+	}
+	return fmt.Sprintf("https://cdn.jsdelivr.net/gh/nitesh000/skmp@%s/registry/index.json", tag)
+}
 
 func cachePath() string {
 	home, _ := os.UserHomeDir()
@@ -30,7 +37,7 @@ func cacheValid() bool {
 
 func fetchRemote() (*Index, error) {
 	client := &http.Client{Timeout: 10 * time.Second}
-	res, err := client.Get(indexURL)
+	res, err := client.Get(indexURL())
 	if err != nil {
 		return nil, err
 	}

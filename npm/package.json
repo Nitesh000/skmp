@@ -1,0 +1,19 @@
+{
+  "name": "skmp-cli",
+  "version": "0.1.0",
+  "description": "Skill marketplace for AI agent skills",
+  "bin": {
+    "skmp": "bin/skmp.js"
+  },
+  "man": "./skmp.1",
+  "scripts": {
+    "postinstall": "node scripts/install.js",
+    "version": "sed -i '' \"s/var Version = \\\".*\\\"/var Version = \\\"$npm_package_version\\\"/\" ../skmp/config/version.go && git add ../skmp/config/version.go"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nitesh000/skmp.git"
+  },
+  "author": "nitesh000",
+  "license": "MIT"
+}
