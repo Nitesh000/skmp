@@ -109,7 +109,7 @@ Add to the `bundles` array in `registry/index.json`:
 - `skills_path` — path inside your repo where skill folders live (e.g. `skills`, `registry/skills`)
 - `skills` — list of skill names in the bundle; each will be downloaded from `repo/branch/skills_path/<name>/`
 
-Skills listed in a bundle don't have to be individually listed in `registry/skills` — they'll be installed via `BundleSkillSource` from the bundle's repo directly. That said, individually listing them improves discoverability.
+Every skill listed in a bundle **must also be individually listed** in the `skills` array. Bundles are a convenience shortcut, not a namespace — every skill must be independently installable via `skmp add <name>`. PRs that add a bundle without corresponding individual skill entries will be asked to add them before merge.
 
 ---
 
