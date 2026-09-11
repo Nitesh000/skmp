@@ -1,11 +1,26 @@
 {
   "name": "skmp-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Skill marketplace for AI agent skills",
   "bin": {
     "skmp": "bin/skmp.js"
   },
-  "man": "./skmp.1",
+  "files": [
+    "bin/",
+    "scripts/",
+    "man/",
+    "README.md"
+  ],
+  "man": [
+    "man/skmp.1",
+    "man/skmp-add.1",
+    "man/skmp-remove.1",
+    "man/skmp-list.1",
+    "man/skmp-sync.1",
+    "man/skmp-update.1",
+    "man/skmp-version.1",
+    "man/skmp-uninstall.1"
+  ],
   "scripts": {
     "postinstall": "node scripts/install.js"
   },
