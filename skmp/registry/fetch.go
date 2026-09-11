@@ -19,7 +19,7 @@ func indexURL() string {
 	if config.Version == "dev" {
 		tag = "master"
 	}
-	return fmt.Sprintf("https://cdn.jsdelivr.net/gh/nitesh000/skmp@%s/registry/index.json", tag)
+	return fmt.Sprintf("https://raw.githubusercontent.com/Nitesh000/skmp/%s/registry/index.json", tag)
 }
 
 func cachePath() string {

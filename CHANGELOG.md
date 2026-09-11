@@ -25,7 +25,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
   - Codex → `~/.codex/skills/`
   - Cursor → `~/.cursor/skills/`
   - OpenCode → registered in `~/.config/opencode/opencode.jsonc`
-- Registry backed by `registry/index.json`, served via jsDelivr CDN
+- Registry backed by `registry/index.json`, served directly from GitHub
 - Local 24 h registry cache
 - Bleve full-text search with wildcard + fuzzy queries
 - Custom bleve analyzer that preserves hyphens, dots, and other punctuation in skill names

@@ -106,7 +106,7 @@ OpenCode is the exception — it reads skills from paths listed in its own confi
 
 ## Registry
 
-The skill registry lives at [`registry/index.json`](registry/index.json) in this repo and is served via jsDelivr CDN. It is cached locally for 24 hours (`skmp update` forces a refresh).
+The skill registry lives at [`registry/index.json`](registry/index.json) in this repo and is served directly from GitHub. It is cached locally for 24 hours (`skmp update` forces a refresh).
 
 Skills themselves live in their **author's own GitHub repo** — the registry only stores metadata and a source URL. skmp fetches skill files on demand at install time.
 
