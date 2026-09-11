@@ -173,6 +173,33 @@ func downloadFile(url, dest string) error {
 	return err
 }
 
+// Uninstall removes all symlinks skmp created and deletes ~/.skmp entirely
+func Uninstall() error {
+	home, _ := os.UserHomeDir()
+	storeDir := StoreDir()
+
+	// remove all symlinks pointing into ~/.skmp/skills from every harness dir
+	entries, err := os.ReadDir(storeDir)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+
+	seen := map[string]bool{}
+	for _, h := range Detect() {
+		if seen[h.SkillsDir] {
+			continue
+		}
+		seen[h.SkillsDir] = true
+		for _, e := range entries {
+			link := filepath.Join(h.SkillsDir, e.Name())
+			os.Remove(link)
+		}
+	}
+
+	// delete ~/.skmp entirely
+	return os.RemoveAll(filepath.Join(home, ".skmp"))
+}
+
 func Sync() (int, error) {
 	storeDir := StoreDir()
 	entries, err := os.ReadDir(storeDir)

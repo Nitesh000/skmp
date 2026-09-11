@@ -42,6 +42,11 @@ func Detect() []Harness {
 			SkillsDir: filepath.Join(home, ".codex", "skills"),
 			Installed: commandExists("codex"),
 		},
+		{
+			Name:      "cursor",
+			SkillsDir: agentsSkills,
+			Installed: dirExist(filepath.Join(home, ".cursor")),
+		},
 	}
 }
 
