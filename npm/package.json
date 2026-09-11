@@ -7,8 +7,7 @@
   },
   "man": "./skmp.1",
   "scripts": {
-    "postinstall": "node scripts/install.js",
-    "version": "sed -i '' \"s/var Version = \\\".*\\\"/var Version = \\\"$npm_package_version\\\"/\" ../skmp/config/version.go && git add ../skmp/config/version.go"
+    "postinstall": "node scripts/install.js"
   },
   "repository": {
     "type": "git",
