@@ -7,11 +7,9 @@ import (
 )
 
 type Harness struct {
-	Name      string
-	SkillsDir string
-	Installed bool
-	// ConfigBased harnesses read skills from a path registered in their own
-	// config file instead of scanning a well-known directory.
+	Name        string
+	SkillsDir   string
+	Installed   bool
 	ConfigBased bool
 }
 
@@ -43,15 +41,14 @@ func Detect() []Harness {
 		},
 		{
 			Name:      "cursor",
-			SkillsDir: filepath.Join(home, ".cursor", "skills-cursor"),
-			Installed: dirExist(filepath.Join(home, ".cursor")),
+			SkillsDir: filepath.Join(home, ".cursor", "skills"),
+			Installed: fileExists(filepath.Join(home, ".cursor", "mcp.json")),
 		},
 	}
 }
 
 func InstalledHarnesses() []Harness {
 	var out []Harness
-
 	for _, h := range Detect() {
 		if h.Installed {
 			out = append(out, h)
@@ -65,7 +62,7 @@ func commandExists(name string) bool {
 	return err == nil
 }
 
-func dirExist(path string) bool {
+func fileExists(path string) bool {
 	info, err := os.Stat(path)
-	return err == nil && info.IsDir()
+	return err == nil && !info.IsDir()
 }

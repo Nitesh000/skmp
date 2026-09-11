@@ -161,9 +161,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		if m.showHelp {
 			switch msg.String() {
-			case "q", "ctrl+c":
-				return m, tea.Quit
-			case "?", "esc":
+			case "?", "esc", "q":
 				m.showHelp = false
 			}
 			return m, tea.Batch(cmds...)

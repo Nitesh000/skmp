@@ -4,7 +4,8 @@ import "github.com/charmbracelet/lipgloss"
 
 var (
 	subtle    = lipgloss.AdaptiveColor{Light: "#D9DCCF", Dark: "#383838"}
-	highlight = lipgloss.AdaptiveColor{Light: "#874BFD", Dark: "#7D56F4"}
+	highlight = lipgloss.AdaptiveColor{Light: "#2B8A8A", Dark: "#5CC8C8"}
+	tabBg     = lipgloss.AdaptiveColor{Light: "#135B5B", Dark: "#1A7373"}
 	muted     = lipgloss.AdaptiveColor{Light: "#888888", Dark: "#626262"}
 	special   = lipgloss.AdaptiveColor{Light: "#43BF6D", Dark: "#73F59F"}
 	warn      = lipgloss.AdaptiveColor{Light: "#B8860B", Dark: "#E6C07B"}
@@ -54,7 +55,7 @@ var (
 
 	activeTabStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("#FFFFFF")).
-			Background(highlight).
+			Background(tabBg).
 			Bold(true)
 
 	inactiveTabStyle = lipgloss.NewStyle().
