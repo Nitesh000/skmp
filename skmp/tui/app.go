@@ -183,7 +183,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case "j", "down":
 			if m.detailFocus {
-				m.detailScroll++
+				if m.skillHarnesses != nil {
+					hl := m.installedHarnessList()
+					if m.harnessIdx < len(hl)-1 {
+						m.harnessIdx++
+					}
+				} else {
+					m.detailScroll++
+				}
 			} else {
 				m.cursor++
 				m.detailScroll = 0
@@ -191,7 +198,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "k", "up":
 			if m.detailFocus {
-				if m.detailScroll > 0 {
+				if m.skillHarnesses != nil {
+					if m.harnessIdx > 0 {
+						m.harnessIdx--
+					}
+				} else if m.detailScroll > 0 {
 					m.detailScroll--
 				}
 			} else if m.cursor > 0 {
@@ -214,6 +225,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.cursor = m.listLen() - 1
 				m.detailScroll = 0
+			}
+
+		case " ", "enter":
+			if m.detailFocus && m.skillHarnesses != nil {
+				m.toggleHarness()
 			}
 
 		case "1":
@@ -243,6 +259,65 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		m.clampCursor()
+	case tea.MouseMsg:
+		tabBarH := lipgloss.Height(m.tabBarView())
+
+		switch {
+		case msg.Button == tea.MouseButtonWheelUp:
+			if m.inDetailPane(msg.X) {
+				if m.skillHarnesses != nil {
+					if m.harnessIdx > 0 {
+						m.harnessIdx--
+					}
+				} else if m.detailScroll > 0 {
+					m.detailScroll--
+				}
+			} else {
+				if m.cursor > 0 {
+					m.cursor--
+					m.detailScroll = 0
+					m.refreshHarnessState()
+				}
+			}
+
+		case msg.Button == tea.MouseButtonWheelDown:
+			if m.inDetailPane(msg.X) {
+				if m.skillHarnesses != nil {
+					hl := m.installedHarnessList()
+					if m.harnessIdx < len(hl)-1 {
+						m.harnessIdx++
+					}
+				} else {
+					m.detailScroll++
+				}
+			} else {
+				m.cursor++
+				m.clampCursor()
+				m.detailScroll = 0
+				m.refreshHarnessState()
+			}
+
+		case msg.Button == tea.MouseButtonLeft && msg.Action == tea.MouseActionPress:
+			if msg.Y < tabBarH {
+				m.handleTabClick(msg.X)
+			} else if m.inDetailPane(msg.X) {
+				m.detailFocus = true
+				rowStart := m.harnessRowStart()
+				if rowStart >= 0 {
+					contentY := msg.Y - tabBarH - 1 + m.detailScroll
+					rowIdx := contentY - rowStart
+					hl := m.installedHarnessList()
+					if rowIdx >= 0 && rowIdx < len(hl) {
+						m.harnessIdx = rowIdx
+						m.toggleHarness()
+					}
+				}
+			} else {
+				m.detailFocus = false
+				m.handleListClick(msg.Y, tabBarH)
+			}
+		}
+
 	}
 
 	return m, tea.Batch(cmds...)
@@ -490,18 +565,7 @@ func (m Model) installedBundles() []registry.Bundle {
 }
 
 func (m Model) bodyView() string {
-	tabH := lipgloss.Height(m.tabBarView())
-	statusH := lipgloss.Height(m.statusBarView())
-	helpStr := "  j/k move · K/J top/bottom · 1-4 tabs · / search · i install · x remove · ? help · q quit"
-	if m.width < minWidth {
-		helpStr = "  j/k move · K/J top/bottom · 1-4 tabs · ? help · q quit"
-	}
-	helpH := lipgloss.Height(mutedStyle.MaxWidth(m.width).Render(helpStr))
-	outerH := m.height - tabH - statusH - helpH
-	if outerH < 3 {
-		outerH = 3
-	}
-	innerH := outerH - 2 // account for top and bottom borders
+	outerH, innerH := m.bodyDims()
 
 	if m.showHelp {
 		return lipgloss.Place(m.width, outerH, lipgloss.Center, lipgloss.Center, helpView())
@@ -523,6 +587,22 @@ func (m Model) bodyView() string {
 		m.paneList(listW, outerH, innerH),
 		m.paneDetail(detailW, outerH, innerH),
 	)
+}
+
+func (m Model) bodyDims() (outerH, innerH int) {
+	tabH := lipgloss.Height(m.tabBarView())
+	statusH := lipgloss.Height(m.statusBarView())
+	helpStr := "  j/k move · K/J top/bottom · 1-4 tabs · / search · i install · x remove · ? help · q quit"
+	if m.width < minWidth {
+		helpStr = "  j/k move · K/J top/bottom · 1-4 tabs · ? help · q quit"
+	}
+	helpH := lipgloss.Height(mutedStyle.MaxWidth(m.width).Render(helpStr))
+	outerH = m.height - tabH - statusH - helpH
+	if outerH < 3 {
+		outerH = 3
+	}
+	innerH = outerH - 2
+	return
 }
 
 func (m Model) paneList(w, outerH, innerH int) string {
@@ -838,4 +918,99 @@ func doRemove(name string) tea.Cmd {
 		err := harness.Remove(name)
 		return actionCompleteMsg{name: name, isInstall: false, err: err}
 	}
+}
+
+func (m Model) installedHarnessList() []harness.Harness {
+	var out []harness.Harness
+	for _, h := range m.harnesses {
+		if h.Installed {
+			out = append(out, h)
+		}
+	}
+	return out
+}
+
+func (m *Model) toggleHarness() {
+	skills := m.visibleSkills()
+	if len(skills) == 0 || m.cursor >= len(skills) {
+		return
+	}
+	skillName := skills[m.cursor].Name
+	if !m.installed[skillName] {
+		return
+	}
+	hl := m.installedHarnessList()
+	if m.harnessIdx >= len(hl) {
+		return
+	}
+	h := hl[m.harnessIdx]
+	if h.ConfigBased {
+		return
+	}
+	if m.skillHarnesses[h.Name] {
+		harness.UnlinkSkillFrom(skillName, h.Name)
+		m.skillHarnesses[h.Name] = false
+	} else {
+		harness.LinkSkillTo(skillName, h.Name)
+		m.skillHarnesses[h.Name] = true
+	}
+}
+
+func (m Model) inDetailPane(x int) bool {
+	return x >= m.width/3+2
+}
+
+func (m Model) harnessRowStart() int {
+	if m.skillHarnesses == nil {
+		return -1
+	}
+	skills := m.visibleSkills()
+	if len(skills) == 0 || m.cursor >= len(skills) {
+		return -1
+	}
+	detailW := m.width - m.width/3 - 4
+	descLines := len(strings.Split(wrapText(skills[m.cursor].Description, detailW-4), "\n"))
+	return 11 + descLines
+}
+
+func (m *Model) handleTabClick(x int) {
+	labels := []string{
+		"Skills",
+		"Bundles",
+		fmt.Sprintf("My Skills (%d)", m.installedCount()),
+		fmt.Sprintf("My Bundles (%d)", len(m.installedBundles())),
+	}
+	pos := 0
+	for i, label := range labels {
+		var s string
+		if tab(i) == m.activeTab {
+			s = activeTabStyle.Render(fmt.Sprintf(" %d %s ", i+1, label))
+		} else if m.width < minWidth {
+			s = inactiveTabStyle.Render(fmt.Sprintf(" %d ", i+1))
+		} else {
+			s = inactiveTabStyle.Render(fmt.Sprintf(" %d %s ", i+1, label))
+		}
+		w := lipgloss.Width(s)
+		if x >= pos && x < pos+w {
+			m.switchTab(tab(i))
+			return
+		}
+		pos += w + 1
+	}
+}
+
+func (m *Model) handleListClick(mouseY, tabBarH int) {
+	contentY := mouseY - tabBarH - 1
+	if contentY < 0 {
+		return
+	}
+	_, innerH := m.bodyDims()
+	offset, _ := m.viewport(m.listLen(), innerH)
+	idx := contentY + offset
+	if idx < 0 || idx >= m.listLen() {
+		return
+	}
+	m.cursor = idx
+	m.detailScroll = 0
+	m.refreshHarnessState()
 }
