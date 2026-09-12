@@ -39,6 +39,15 @@
       "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/write-a-skill/"
     },
     {
+      "name": "TDD",
+      "description": "Test-driven development with red-green-refactor loop. Use when user wants to build features or fix bugs using TDD, mentions 'red-green-refactor', wants integration tests, or asks for test-first development.",
+      "version": "1.0.0",
+      "author": "nitesh000",
+      "tags": ["testing", "tdd"],
+      "harnesses": ["all"],
+      "source": "https://raw.githubusercontent.com/nitesh000/skmp/master/registry/skills/TDD/"
+    },
+    {
       "name": "ask-matt",
       "description": "Ask which skill or flow fits your situation and route through the skills in this repo.",
       "version": "1.0.0",
@@ -1184,12 +1193,12 @@
   "bundles": [
     {
       "name": "nitesh000/skill-set",
-      "description": "Core productivity skills — caveman, diagnose, tdd, write-a-skill",
+      "description": "Core productivity skills — caveman, diagnose, TDD, write-a-skill",
       "author": "nitesh000",
       "repo": "https://github.com/nitesh000/skmp",
       "branch": "master",
       "skills_path": "registry/skills",
-      "skills": ["caveman", "diagnose", "tdd", "write-a-skill"]
+      "skills": ["caveman", "diagnose", "TDD", "write-a-skill"]
     },
     {
       "name": "mattpocock/skills-engineering",
@@ -1374,4 +1383,3 @@
     }
   ]
 }
-
