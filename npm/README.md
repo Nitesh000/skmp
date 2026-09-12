@@ -4,9 +4,20 @@ A full-screen TUI package manager for AI agent skills.
 
 Install, search, and manage skills across all major agentic tools — pi, Claude Code, Antigravity, Codex, Cursor, and OpenCode — from one place.
 
-![skmp TUI](https://raw.githubusercontent.com/Nitesh000/skmp/master/docs/images/skmp.png)
+![Skills tab](https://raw.githubusercontent.com/Nitesh000/skmp/master/docs/images/skills.png)
 
-> **Demo** — [watch a 60-second walkthrough](https://res.cloudinary.com/doqtqybtr/video/upload/v1789136693/Screen_Recording_2026-09-11_at_7.49.05_PM_atriwa.mov)
+<details>
+<summary><b>View more screenshots</b></summary>
+<br>
+
+**Bundles Tab:**
+![Bundles tab](https://raw.githubusercontent.com/Nitesh000/skmp/master/docs/images/bundle.png)
+
+**Help Menu:**
+![Help menu](https://raw.githubusercontent.com/Nitesh000/skmp/master/docs/images/help.png)
+</details>
+
+> **Demo** — [watch a 60-second walkthrough](https://res.cloudinary.com/doqtqybtr/video/upload/v1789204940/Screen_Recording_2026-09-12_at_2.49.11_PM_ls2fvy.mov)
 
 ---
 
