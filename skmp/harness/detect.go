@@ -29,9 +29,14 @@ func Detect() []Harness {
 			Installed: commandExists("claude"),
 		},
 		{
-			Name:      "antigravity",
+			Name:      "antigravity-ide",
 			SkillsDir: filepath.Join(home, ".gemini", "antigravity-ide", "skills"),
 			Installed: fileExists(filepath.Join(home, ".antigravity-ide", "antigravity-ide", "bin", "agy-ide")),
+		},
+		{
+			Name:      "agy",
+			SkillsDir: filepath.Join(home, ".gemini", "config", "skills"),
+			Installed: commandExists("agy"),
 		},
 		{
 			Name:        "opencode",
@@ -46,8 +51,8 @@ func Detect() []Harness {
 		},
 		{
 			Name:      "cursor",
-			SkillsDir: filepath.Join(home, ".cursor", "skills"),
-			Installed: fileExists(filepath.Join(home, ".cursor", "mcp.json")),
+			SkillsDir: filepath.Join(home, ".cursor", "skills-cursor"),
+			Installed: commandExists("cursor"),
 		},
 	}
 }
