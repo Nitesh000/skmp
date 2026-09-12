@@ -426,3 +426,66 @@ func Sync() (int, error) {
 
 	return linked, nil
 }
+
+// returns map of harness name: true, if the skill directory exist inside that harness's SkillDir
+func SkillHarnessState(skillName string) map[string]bool {
+	state := map[string]bool{}
+	for _, h := range Detect() {
+		_, err := os.Stat(filepath.Join(h.SkillsDir, skillName))
+		state[h.Name] = err == nil
+	}
+	return state
+}
+
+func LinkSkillTo(skillName, harnessName string) error {
+	storeEntry := filepath.Join(StoreDir(), skillName)
+	for _, h := range Detect() {
+		if h.Name != harnessName {
+			continue
+		}
+		if h.ConfigBased {
+			return nil
+		}
+		os.MkdirAll(h.SkillsDir, 0755)
+		link := filepath.Join(h.SkillsDir, skillName)
+		if runtime.GOOS == "windows" {
+			return copyDir(storeEntry, skillName)
+		}
+		if isSymlink(link) {
+			if _, err := os.Stat(link); os.IsNotExist(err) {
+				os.Remove(link)
+			}
+		}
+		if err := os.Symlink(storeEntry, link); err != nil {
+			if !os.IsExist(err) {
+				return fmt.Errorf("symlink %s: %w", h.SkillsDir, err)
+			}
+			if !isSymlink(link) {
+				return nil
+			}
+			os.Remove(link)
+			return os.Symlink(storeEntry, link)
+		}
+		return nil
+	}
+	return fmt.Errorf("harness %q not fouond", harnessName)
+}
+
+// remove skill from the harness's skilldir
+func UnlinkSkillFrom(skillName, harnessName string) error {
+	store := StoreDir()
+	for _, h := range Detect() {
+		if h.Name != harnessName {
+			continue
+		}
+		if h.ConfigBased {
+			return nil
+		}
+		p := filepath.Join(h.SkillsDir, skillName)
+		if !pointsInto(p, store) {
+			return nil
+		}
+		return os.RemoveAll(p)
+	}
+	return fmt.Errorf("harness %q not found", harnessName)
+}

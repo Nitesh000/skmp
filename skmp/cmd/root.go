@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Short: "Skill marketplace for AI agent skills",
 	Long:  "A TUI application to install skills from Skill Marketplace with vim bindings for intuitive navigation.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		p := tea.NewProgram(tui.New(config.Version), tea.WithAltScreen())
+		p := tea.NewProgram(tui.New(config.Version), tea.WithMouseCellMotion(), tea.WithAltScreen())
 		_, err := p.Run()
 		return err
 	},
