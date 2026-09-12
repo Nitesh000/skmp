@@ -6,9 +6,31 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- Per-skill harness access control: toggle individual harnesses on/off per skill from the detail pane (`tab` to focus, `j`/`k` to navigate, `space`/`enter` to toggle)
+- Mouse support throughout the TUI: scroll to navigate lists and detail pane, click tabs to switch, click list items to select, click harness rows to toggle access
+- `ctrl+o` key — open selected skill or bundle in browser (converts raw source URL to viewable GitHub tree URL)
+- `R` key — report skill issue, opens a prefilled GitHub issue with skill name, version, author, and source pre-populated
+- `agy` harness support (Antigravity CLI) — skills path `~/.gemini/config/skills/`
+- Three new harness functions: `SkillHarnessState`, `LinkSkillTo`, `UnlinkSkillFrom`
+- Help menu updated with all new keybindings
+
+### Fixed
+
+- Cursor skills path corrected from `~/.cursor/skills/` to `~/.cursor/skills-cursor/`
+- Cursor installed detection changed from missing `mcp.json` check to `cursor` in PATH
+- Detail pane overflow: `scroll()` now always truncates to pane height instead of passing full content through when offset is zero
+- Antigravity harness renamed to `antigravity-ide` to distinguish from `agy` CLI
+
+---
+
 ## [0.1.0] — 2025-09-11
 
 ### Added
+
 - Full-screen TUI with Skills, Bundles, My Skills, and My Bundles tabs
 - `skmp add` — install one or more skills by name
 - `skmp add --bundle` — install all skills in a named bundle

@@ -149,9 +149,10 @@ skmp/
 | --- | --- | --- |
 | pi | `pi` in PATH | `~/.agents/skills/` |
 | Claude Code | `claude` in PATH | `~/.claude/skills/` |
-| Antigravity | `~/.antigravity-ide/antigravity-ide/bin/agy-ide` exists | `~/.gemini/antigravity-ide/skills/` |
+| Antigravity IDE | `~/.antigravity-ide/antigravity-ide/bin/agy-ide` exists | `~/.gemini/antigravity-ide/skills/` |
+| agy | `agy` in PATH | `~/.gemini/config/skills/` |
 | Codex | `codex` in PATH | `~/.codex/skills/` |
-| Cursor | `~/.cursor/mcp.json` exists | `~/.cursor/skills/` |
+| Cursor | `cursor` in PATH | `~/.cursor/skills-cursor/` |
 | OpenCode | `opencode` in PATH | config-based (`opencode.jsonc`) |
 
 ### Guidelines

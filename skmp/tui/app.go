@@ -2,7 +2,11 @@ package tui
 
 import (
 	"fmt"
+	"net/url"
+	"os/exec"
+	"runtime"
 	"strings"
+	"time"
 
 	"github.com/Nitesh000/skmp/harness"
 	"github.com/Nitesh000/skmp/registry"
@@ -48,6 +52,7 @@ type Model struct {
 	harnesses       []harness.Harness
 	skillHarnesses  map[string]bool
 	harnessIdx      int
+	openFlash       bool
 }
 
 // messages
@@ -61,6 +66,7 @@ type (
 		isInstall bool
 		err       error
 	}
+	openFlashMsg struct{}
 )
 
 func New(version string) Model {
@@ -138,6 +144,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case harnessesLoadedMsg:
 		m.harnesses = msg.harnesses
+
+	case openFlashMsg:
+		m.openFlash = false
 
 	case actionCompleteMsg:
 		delete(m.loading, msg.name)
@@ -230,6 +239,17 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case " ", "enter":
 			if m.detailFocus && m.skillHarnesses != nil {
 				m.toggleHarness()
+			}
+
+		case "ctrl+o":
+			if u := m.currentRepoURL(); u != "" {
+				m.openFlash = true
+				return m, tea.Batch(doOpen(u), clearFlash())
+			}
+
+		case "R":
+			if u := m.currentReportURL(); u != "" {
+				return m, doOpen(u)
 			}
 
 		case "1":
@@ -487,9 +507,9 @@ func (m Model) View() string {
 		return "loading..."
 	}
 
-	help := "  j/k move · K/J top/bottom · 1-4 tabs · / search · i install · x remove · ? help · q quit"
+	help := "  j/k move · K/J top/bottom · 1-4 tabs · / search · i install · x remove · ctrl+o open · R report · ? help · q quit"
 	if m.width < minWidth {
-		help = "  j/k move · K/J top/bottom · 1-4 tabs · ? help · q quit"
+		help = "  j/k · 1-4 · i · x · ctrl+o · R · ? · q"
 	}
 
 	return lipgloss.JoinVertical(lipgloss.Left,
@@ -543,6 +563,10 @@ func (m Model) statusBarView() string {
 		} else {
 			left += fmt.Sprintf(" · %s %d in progress", m.spinner.View(), len(m.loading))
 		}
+	}
+
+	if m.openFlash {
+		left += titleStyle.Render(" · ↗ opening in browser")
 	}
 
 	right := "skmp v" + m.version + "  "
@@ -844,16 +868,20 @@ func (m Model) bundleDetailsView(w int) string {
 
 func helpView() string {
 	bindings := [][2]string{
-		{"j / ↓", "move down"},
-		{"k / ↑", "move up"},
+		{"j / ↓", "move down (list) / next harness (detail)"},
+		{"k / ↑", "move up (list) / prev harness (detail)"},
+		{"K / J", "jump to top / bottom"},
 		{"1", "all skills"},
 		{"2", "all bundles"},
 		{"3", "installed skills"},
 		{"4", "installed bundles"},
 		{"tab", "switch list / detail focus"},
+		{"space / enter", "toggle harness access (detail focused)"},
 		{"/", "search (esc to leave)"},
 		{"i", "install selection"},
 		{"x", "remove selection"},
+		{"ctrl+o", "open skill / bundle in browser"},
+		{"R", "report skill issue"},
 		{"?", "close this help"},
 		{"q", "quit"},
 	}
@@ -891,6 +919,92 @@ func wrapText(text string, width int) string {
 		lines = append(lines, line)
 	}
 	return strings.Join(lines, "\n")
+}
+
+func clearFlash() tea.Cmd {
+	return func() tea.Msg {
+		time.Sleep(600 * time.Millisecond)
+		return openFlashMsg{}
+	}
+}
+
+func openURL(rawURL string) {
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "darwin":
+		cmd = exec.Command("open", rawURL)
+	case "windows":
+		cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", rawURL)
+	default:
+		cmd = exec.Command("xdg-open", rawURL)
+	}
+	cmd.Start()
+}
+
+func doOpen(rawURL string) tea.Cmd {
+	return func() tea.Msg {
+		openURL(rawURL)
+		return nil
+	}
+}
+
+func sourceToRepoURL(source string) string {
+	u := strings.Replace(source, "raw.githubusercontent.com/", "github.com/", 1)
+	prefix := "https://github.com/"
+	if !strings.HasPrefix(u, prefix) {
+		return source
+	}
+	rest := u[len(prefix):]
+	parts := strings.SplitN(rest, "/", 3)
+	if len(parts) < 3 {
+		return u
+	}
+	return prefix + parts[0] + "/" + parts[1] + "/tree/" + strings.TrimSuffix(parts[2], "/")
+}
+
+func buildReportURL(s registry.Skill, version string) string {
+	title := url.QueryEscape("Report skill: " + s.Name)
+	body := url.QueryEscape(fmt.Sprintf(
+		"## What happened\n\n<!-- describe what went wrong with the skill -->\n\n"+
+			"## Expected behavior\n\n<!-- what should have happened -->\n\n"+
+			"## Steps to reproduce\n\n```\n1.\n2.\n3.\n```\n\n"+
+			"## Environment\n\n"+
+			"- skmp version: %s\n"+
+			"- OS + arch: %s/%s\n"+
+			"- Harness(es) installed: (pi / claude-code / antigravity-ide / agy / codex / cursor / opencode)\n"+
+			"- Skill: %s v%s by %s\n"+
+			"- Source: %s\n\n"+
+			"## Output / error message\n\n```\npaste error here\n```",
+		version, runtime.GOOS, runtime.GOARCH,
+		s.Name, s.Version, s.Author, s.Source,
+	))
+	return "https://github.com/Nitesh000/skmp/issues/new?title=" + title + "&body=" + body
+}
+
+func (m Model) currentRepoURL() string {
+	if m.showingBundles() {
+		bundles := m.visibleBundles()
+		if len(bundles) == 0 || m.cursor >= len(bundles) {
+			return ""
+		}
+		return bundles[m.cursor].Repo
+	}
+	skills := m.visibleSkills()
+	if len(skills) == 0 || m.cursor >= len(skills) {
+		return ""
+	}
+	return sourceToRepoURL(skills[m.cursor].Source)
+}
+
+func (m Model) currentReportURL() string {
+	if m.showingBundles() {
+		return ""
+	}
+	skills := m.visibleSkills()
+	if len(skills) == 0 || m.cursor >= len(skills) {
+		return ""
+	}
+	return buildReportURL(skills[m.cursor], m.version)
 }
 
 func loadInstalled() tea.Cmd {

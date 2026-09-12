@@ -314,3 +314,171 @@ func TestPointsIntoRejectsNonSymlink(t *testing.T) {
 		t.Error("a real directory should not be considered managed by skmp")
 	}
 }
+
+// --- Step 8: SkillHarnessState / LinkSkillTo / UnlinkSkillFrom ---
+
+func TestSkillHarnessState(t *testing.T) {
+	store := t.TempDir()
+	h1Dir := t.TempDir()
+	h2Dir := t.TempDir()
+
+	origStore := StoreDir
+	origDetect := detectFn
+	StoreDir = func() string { return store }
+	detectFn = func() []Harness {
+		return []Harness{
+			{Name: "h1", SkillsDir: h1Dir, Installed: true},
+			{Name: "h2", SkillsDir: h2Dir, Installed: true},
+		}
+	}
+	defer func() { StoreDir = origStore; detectFn = origDetect }()
+
+	storeEntry := writeSkill(t, store, "myskill")
+	os.Symlink(storeEntry, filepath.Join(h1Dir, "myskill"))
+
+	state := SkillHarnessState("myskill")
+	if !state["h1"] {
+		t.Error("h1 should be linked")
+	}
+	if state["h2"] {
+		t.Error("h2 should not be linked")
+	}
+}
+
+func TestLinkSkillTo(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("symlink test")
+	}
+
+	store := t.TempDir()
+	hDir := t.TempDir()
+
+	origStore := StoreDir
+	origDetect := detectFn
+	StoreDir = func() string { return store }
+	detectFn = func() []Harness {
+		return []Harness{{Name: "myharness", SkillsDir: hDir, Installed: true}}
+	}
+	defer func() { StoreDir = origStore; detectFn = origDetect }()
+
+	storeEntry := writeSkill(t, store, "myskill")
+
+	if err := LinkSkillTo("myskill", "myharness"); err != nil {
+		t.Fatal(err)
+	}
+
+	target, err := os.Readlink(filepath.Join(hDir, "myskill"))
+	if err != nil {
+		t.Fatal("symlink not created:", err)
+	}
+	if target != storeEntry {
+		t.Errorf("expected link to %s, got %s", storeEntry, target)
+	}
+}
+
+func TestLinkSkillToIdempotent(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("symlink test")
+	}
+
+	store := t.TempDir()
+	hDir := t.TempDir()
+
+	origStore := StoreDir
+	origDetect := detectFn
+	StoreDir = func() string { return store }
+	detectFn = func() []Harness {
+		return []Harness{{Name: "myharness", SkillsDir: hDir, Installed: true}}
+	}
+	defer func() { StoreDir = origStore; detectFn = origDetect }()
+
+	writeSkill(t, store, "myskill")
+
+	if err := LinkSkillTo("myskill", "myharness"); err != nil {
+		t.Fatal("first link:", err)
+	}
+	if err := LinkSkillTo("myskill", "myharness"); err != nil {
+		t.Fatal("second link should be idempotent:", err)
+	}
+}
+
+func TestUnlinkSkillFrom(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("symlink test")
+	}
+
+	store := t.TempDir()
+	hDir := t.TempDir()
+
+	origStore := StoreDir
+	origDetect := detectFn
+	StoreDir = func() string { return store }
+	detectFn = func() []Harness {
+		return []Harness{{Name: "myharness", SkillsDir: hDir, Installed: true}}
+	}
+	defer func() { StoreDir = origStore; detectFn = origDetect }()
+
+	storeEntry := writeSkill(t, store, "myskill")
+	link := filepath.Join(hDir, "myskill")
+	os.Symlink(storeEntry, link)
+
+	if err := UnlinkSkillFrom("myskill", "myharness"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Lstat(link); err == nil {
+		t.Error("symlink should be removed from harness dir")
+	}
+	if _, err := os.Stat(storeEntry); err != nil {
+		t.Error("store entry must survive unlink")
+	}
+}
+
+func TestUnlinkPreservesUserOwnedDir(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("symlink test")
+	}
+
+	store := t.TempDir()
+	hDir := t.TempDir()
+
+	origStore := StoreDir
+	origDetect := detectFn
+	StoreDir = func() string { return store }
+	detectFn = func() []Harness {
+		return []Harness{{Name: "myharness", SkillsDir: hDir, Installed: true}}
+	}
+	defer func() { StoreDir = origStore; detectFn = origDetect }()
+
+	userDir := writeSkill(t, hDir, "myskill")
+
+	if err := UnlinkSkillFrom("myskill", "myharness"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(userDir); err != nil {
+		t.Error("user-owned dir must not be removed")
+	}
+}
+
+func TestUnlinkSkipsConfigBased(t *testing.T) {
+	store := t.TempDir()
+	hDir := t.TempDir()
+
+	origStore := StoreDir
+	origDetect := detectFn
+	StoreDir = func() string { return store }
+	detectFn = func() []Harness {
+		return []Harness{{Name: "opencode", SkillsDir: hDir, Installed: true, ConfigBased: true}}
+	}
+	defer func() { StoreDir = origStore; detectFn = origDetect }()
+
+	storeEntry := writeSkill(t, store, "myskill")
+	link := filepath.Join(hDir, "myskill")
+	os.Symlink(storeEntry, link)
+
+	if err := UnlinkSkillFrom("myskill", "opencode"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Lstat(link); err != nil {
+		t.Error("ConfigBased harness: path must not be touched by unlink")
+	}
+}
