@@ -45,6 +45,9 @@ type Model struct {
 	showHelp        bool
 	detailFocus     bool
 	detailScroll    int
+	harnesses       []harness.Harness
+	skillHarnesses  map[string]bool
+	harnessIdx      int
 }
 
 // messages
@@ -52,6 +55,7 @@ type (
 	indexLoadedMsg     struct{ idx *registry.Index }
 	indexErrMsg        struct{ err error }
 	installedLoadedMsg struct{ skills []string }
+	harnessesLoadedMsg struct{ harnesses []harness.Harness }
 	actionCompleteMsg  struct {
 		name      string
 		isInstall bool
@@ -79,7 +83,7 @@ func New(version string) Model {
 }
 
 func (m Model) Init() tea.Cmd {
-	return tea.Batch(textinput.Blink, m.spinner.Tick, loadIndex(), loadInstalled())
+	return tea.Batch(textinput.Blink, m.spinner.Tick, loadIndex(), loadInstalled(), loadHarnesses())
 }
 
 func loadIndex() tea.Cmd {
@@ -131,6 +135,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		for _, s := range msg.skills {
 			m.installed[s] = true
 		}
+
+	case harnessesLoadedMsg:
+		m.harnesses = msg.harnesses
 
 	case actionCompleteMsg:
 		delete(m.loading, msg.name)
@@ -753,6 +760,12 @@ func loadInstalled() tea.Cmd {
 	return func() tea.Msg {
 		skills, _ := harness.InstalledSkills()
 		return installedLoadedMsg{skills}
+	}
+}
+
+func loadHarnesses() tea.Cmd {
+	return func() tea.Msg {
+		return harnessesLoadedMsg{harnesses: harness.Detect()}
 	}
 }
 
