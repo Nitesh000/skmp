@@ -1,0 +1,32 @@
+title: skmp
+description: A TUI package manager for AI agent skills. Install, search, and manage skills across pi, Claude Code, Antigravity, Codex, Cursor, and OpenCode.
+url: "https://nitesh000.github.io"
+baseurl: "/skmp"
+
+remote_theme: just-the-docs/just-the-docs@v0.10.1
+
+color_scheme: dark
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+aux_links:
+  GitHub: "https://github.com/Nitesh000/skmp"
+  npm: "https://www.npmjs.com/package/skmp-cli"
+
+aux_links_new_tab: true
+
+footer_content: "MIT License &middot; Built by <a href=\"https://github.com/Nitesh000\">Nitesh Kumar</a>"
+
+search_enabled: true
+search.heading_level: 3
+
+nav_enabled: true
+
+back_to_top: true
+back_to_top_text: "Back to top"
+
+exclude:
+  - images/*.png
