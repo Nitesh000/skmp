@@ -146,6 +146,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else {
 			m.err = msg.err
 		}
+		m.refreshHarnessState()
 		m.clampCursor()
 
 	case tea.KeyMsg:
@@ -186,6 +187,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.cursor++
 				m.detailScroll = 0
+				m.refreshHarnessState()
 			}
 		case "k", "up":
 			if m.detailFocus {
@@ -195,6 +197,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else if m.cursor > 0 {
 				m.cursor--
 				m.detailScroll = 0
+				m.refreshHarnessState()
 			}
 
 		case "K", "home", "pgup":
@@ -249,6 +252,7 @@ func (m *Model) switchTab(t tab) {
 	m.activeTab = t
 	m.cursor = 0
 	m.detailScroll = 0
+	m.refreshHarnessState()
 }
 
 func (m *Model) clampCursor() {
@@ -258,6 +262,21 @@ func (m *Model) clampCursor() {
 	if m.cursor < 0 {
 		m.cursor = 0
 	}
+}
+
+func (m *Model) refreshHarnessState() {
+	skills := m.visibleSkills()
+	if len(skills) == 0 || m.cursor >= len(skills) {
+		m.skillHarnesses = nil
+		return
+	}
+	name := skills[m.cursor].Name
+	if !m.installed[name] {
+		m.skillHarnesses = nil
+		return
+	}
+	m.skillHarnesses = harness.SkillHarnessState(name)
+	m.harnessIdx = 0
 }
 
 // startAction queues installs or removals for the current selection. A bundle
@@ -545,10 +564,14 @@ func scroll(content string, offset, height int) string {
 	if max := len(lines) - height; offset > max {
 		offset = max
 	}
-	if offset < 1 {
-		return content
+	if offset < 0 {
+		offset = 0
 	}
-	return strings.Join(lines[offset:], "\n")
+	end := offset + height
+	if end > len(lines) {
+		end = len(lines)
+	}
+	return strings.Join(lines[offset:end], "\n")
 }
 
 func (m Model) listView(w, h int) string {
@@ -662,7 +685,41 @@ func (m Model) skillDetailView(w int) string {
 		labelStyle.Render("Tags")+tags,
 		"",
 		status,
+		"",
+		m.harnessesView(),
 	)
+}
+
+func (m Model) harnessesView() string {
+	if len(m.skillHarnesses) == 0 {
+		return ""
+	}
+
+	lines := []string{labelStyle.Render("Access")}
+	idx := 0
+	for _, h := range m.harnesses {
+		if !h.Installed {
+			continue
+		}
+
+		cursor := "  "
+		if m.detailFocus && idx == m.harnessIdx {
+			cursor = selectedStyle.Render("▶") + " "
+		}
+
+		var row string
+		if h.ConfigBased {
+			row = installedStyle.Render("[✓]") + " " + h.Name + mutedStyle.Render(" (config)")
+		} else if m.skillHarnesses[h.Name] {
+			row = installedStyle.Render("[✓]") + " " + h.Name
+		} else {
+			row = mutedStyle.Render("[ ]") + " " + h.Name
+		}
+
+		lines = append(lines, cursor+row)
+		idx++
+	}
+	return strings.Join(lines, "\n")
 }
 
 func (m Model) bundleDetailsView(w int) string {
