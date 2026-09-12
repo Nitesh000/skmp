@@ -5,7 +5,13 @@ on:
     branches:
       - main
       - master
+    paths:
+      - "skmp/**"
+      - ".github/workflows/ci.yml"
   pull_request:
+    paths:
+      - "skmp/**"
+      - ".github/workflows/ci.yml"
 
 jobs:
   test:
